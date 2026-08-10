@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurumsys SpA - Detección Acústica</title>
+    <title>AQ-SPEC 1500 - Aurumsys SpA</title>
     <style>
         :root {
-            --bg-color: #121212;
-            --panel-bg: #1e1e1e;
-            --accent: #ff9800;
-            --text-main: #e0e0e0;
-            --text-muted: #888;
-            --danger: #f44336;
-            --success: #4caf50;
+            --bg-dark: #0b0f12;
+            --panel-bg: #13181d;
+            --border-color: #2c3e50;
+            --accent-blue: #00d2ff;
+            --accent-orange: #ff9800;
+            --text-main: #ffffff;
+            --text-muted: #88a0b0;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Roboto Mono', monospace, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-main);
             display: flex;
             flex-direction: column;
@@ -31,66 +31,109 @@
             overflow: hidden;
         }
 
-        /* --- ZONA SUPERIOR: ESTADO --- */
-        header {
+        /* --- BARRA SUPERIOR DE ESTADO --- */
+        .top-bar {
             background-color: var(--panel-bg);
-            padding: 15px 20px;
+            border-bottom: 2px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #333;
+            padding: 6px 15px;
+            font-size: 0.85rem;
         }
 
-        .brand {
-            font-size: 1.2rem;
+        .device-id {
+            color: var(--accent-blue);
             font-weight: bold;
-            color: var(--accent);
             letter-spacing: 1px;
         }
 
-        .telemetry {
+        .system-status {
+            color: var(--text-muted);
+        }
+
+        .status-ok {
+            color: #4caf50;
+            font-weight: bold;
+        }
+
+        .status-icons {
             display: flex;
-            align-items: center;
-            gap: 15px;
+            gap: 12px;
+            color: var(--text-muted);
             font-size: 0.9rem;
         }
 
-        .status-led {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: var(--danger);
-            box-shadow: 0 0 5px var(--danger);
-        }
-        
-        .status-led.connected {
-            background-color: var(--success);
-            box-shadow: 0 0 8px var(--success);
-        }
-
-        .peak-value {
-            background: #000;
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: 1px solid #444;
-            color: var(--accent);
-        }
-
-        /* --- ZONA CENTRAL: VISOR --- */
-        main {
+        /* --- CONTENEDOR PRINCIPAL TIPO PANTALLA TÁCTILE --- */
+        .main-screen {
             flex: 1;
+            display: grid;
+            grid-template-rows: 60% 40%;
+            gap: 6px;
+            padding: 8px;
+            background-color: #050709;
+        }
+
+        /* --- ZONA SUPERIOR: ESPECTROGRAMA + BOTONES LATERALES --- */
+        .spectrogram-section {
+            display: grid;
+            grid-template-columns: 60px 1fr 60px;
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .side-panel {
+            background-color: #0f1318;
             display: flex;
             flex-direction: column;
-            padding: 15px;
-            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 5px;
+            border-right: 1px solid var(--border-color);
         }
 
-        .canvas-container {
-            flex: 1;
-            background-color: #000;
-            border: 1px solid #333;
-            border-radius: 4px;
+        .side-panel.right {
+            border-right: none;
+            border-left: 1px solid var(--border-color);
+        }
+
+        .screen-button {
+            background: transparent;
+            border: 1px solid #334455;
+            color: var(--text-muted);
+            width: 45px;
+            height: 45px;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 0.65rem;
+            gap: 2px;
+            transition: all 0.2s;
+        }
+
+        .screen-button:hover, .screen-button.active {
+            background-color: rgba(0, 210, 255, 0.1);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .screen-button svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .canvas-wrapper {
             position: relative;
+            background-color: #000;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
         }
 
@@ -100,185 +143,251 @@
             display: block;
         }
 
-        /* --- ZONA INFERIOR: CONTROLES --- */
-        .controls {
+        /* --- ZONA INFERIOR: DIAGRAMA DE TUBERÍA Y VALORES --- */
+        .pipe-section {
             background-color: var(--panel-bg);
-            padding: 15px;
-            border-radius: 6px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            align-items: center;
-        }
-
-        .control-group {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            justify-content: space-between;
+            padding: 8px 15px;
+            position: relative;
         }
 
-        label {
-            font-size: 0.8rem;
+        .pipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
             color: var(--text-muted);
             text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .graphic-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            position: relative;
+        }
+
+        /* Simulación del gráfico de la tubería con la válvula central */
+        .pipe-graphic {
+            width: 70%;
+            height: 35px;
+            background: linear-gradient(to bottom, #4a5a6a 0%, #2a3a4a 50%, #1a2a3a 100%);
+            border-top: 2px solid #78909c;
+            border-bottom: 2px solid #263238;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 2px;
+        }
+
+        .valve-center {
+            position: absolute;
+            width: 50px;
+            height: 55px;
+            background: #37474f;
+            border: 2px solid #90a4ae;
+            top: -12px;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sensor-node-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--accent-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-blue);
+            margin-bottom: 3px;
+        }
+
+        .leak-amplitude-text {
+            position: absolute;
+            bottom: 2px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .leak-amplitude-text span {
+            color: var(--accent-blue);
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+
+        /* --- BARRA DE FRECUENCIAS INFERIOR --- */
+        .freq-slider-bar {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding-top: 4px;
+            border-top: 1px solid #1c2630;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
         }
 
         input[type="range"] {
             width: 100%;
-            accent-color: var(--accent);
-        }
-
-        button {
-            background-color: #333;
-            color: var(--text-main);
-            border: 1px solid #555;
-            padding: 12px;
-            border-radius: 4px;
+            accent-color: var(--accent-blue);
+            height: 4px;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.2s;
         }
-
-        button:active {
-            background-color: var(--accent);
-            color: #000;
-        }
-
-        button.active {
-            background-color: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-        }
-
     </style>
 </head>
 <body>
 
-    <!-- ZONA SUPERIOR -->
-    <header>
-        <div class="brand">AURUMSYS SpA</div>
-        <div class="telemetry">
-            <div>Pico: <span class="peak-value" id="peakOut">0.0 dB</span></div>
-            <div class="status-led" id="wsLed"></div>
-        </div>
-    </header>
-
-    <!-- ZONA CENTRAL -->
-    <main>
-        <div class="canvas-container">
-            <!-- El canvas principal donde se dibujará la cascada de frecuencias -->
-            <canvas id="spectrogram"></canvas>
-        </div>
-    </main>
-
-    <!-- ZONA INFERIOR -->
-    <div class="controls">
-        <div class="control-group">
-            <label for="gainSlider">Ganancia (Sensibilidad)</label>
-            <input type="range" id="gainSlider" min="1" max="10" value="1" step="0.5">
-        </div>
-        <div class="control-group">
-            <label for="filterSlider">Filtro High-Pass (Ignorar Graves)</label>
-            <input type="range" id="filterSlider" min="0" max="2000" value="500" step="100">
-        </div>
-        <div class="control-group">
-            <label>&nbsp;</label>
-            <button id="btnHold">CONGELAR IMAGEN</button>
+    <!-- BARRA SUPERIOR -->
+    <div class="top-bar">
+        <div class="device-id">AQ-SPEC 1500</div>
+        <div class="system-status">System Status: <span class="status-ok">Nominal</span></div>
+        <div class="status-icons">
+            <span>💾</span>
+            <span>🔊</span>
+            <span>🔋 100%</span>
         </div>
     </div>
 
-    <!-- LÓGICA DE INTERFAZ Y COMUNICACIÓN -->
-    <script>
-        // --- Variables de Interfaz ---
-        const canvas = document.getElementById('spectrogram');
-        const ctx = canvas.getContext('2d', { alpha: false }); // Optimización para renderizado rápido
-        const wsLed = document.getElementById('wsLed');
-        const peakOut = document.getElementById('peakOut');
+    <!-- PANTALLA PRINCIPAL -->
+    <div class="main-screen">
         
-        let isPaused = false;
-        let gain = 1;
-        let highPass = 500;
+        <!-- SECCIÓN SUPERIOR: Espectrograma Horizontal con Botones -->
+        <div class="spectrogram-section">
+            <!-- Botones Izquierdos -->
+            <div class="side-panel">
+                <button class="screen-button active">
+                    <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 2h2v10H7V7zm4 4h2v6h-2v-6zm4-3h2v9h-2V8z"/></svg>
+                    <span>Signal</span>
+                </button>
+                <button class="screen-button" id="btnFreeze">
+                    <svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                    <span>Hold</span>
+                </button>
+            </div>
 
-        // Ajustar el tamaño del canvas al contenedor real
+            <!-- Visor del Espectrograma Horizontal -->
+            <div class="canvas-wrapper">
+                <canvas id="spectrogramCanvas"></canvas>
+            </div>
+
+            <!-- Botones Derechos -->
+            <div class="side-panel right">
+                <button class="screen-button">
+                    <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+                    <span>Data Log</span>
+                </button>
+                <button class="screen-button">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SECCIÓN INFERIOR: Tubería y Controles -->
+        <div class="pipe-section">
+            <div class="pipe-header">
+                <span>Sensor Node: Primary Line</span>
+                <span>Status: Monitoring</span>
+            </div>
+
+            <div class="graphic-container">
+                <div class="pipe-graphic">
+                    <div class="valve-center">
+                        <div class="sensor-node-dot"></div>
+                    </div>
+                </div>
+                <div class="leak-amplitude-text">
+                    LEAK SIGNATURE AMPLITUDE: <span id="amplitudeVal">785</span>
+                </div>
+            </div>
+
+            <div class="freq-slider-bar">
+                <div class="slider-labels">
+                    <span>0 Hz</span>
+                    <span>Frequency Range</span>
+                    <span>8000 Hz</span>
+                </div>
+                <input type="range" id="freqRange" min="100" max="8000" value="4000">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT DE ANIMACIÓN DEL ESPECTROGRAMA HORIZONTAL -->
+    <script>
+        const canvas = document.getElementById('spectrogramCanvas');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        const amplitudeVal = document.getElementById('amplitudeVal');
+        const btnFreeze = document.getElementById('btnFreeze');
+
+        let isPaused = false;
+
         function resizeCanvas() {
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // --- Eventos de Controles ---
-        document.getElementById('gainSlider').addEventListener('input', (e) => {
-            gain = parseFloat(e.target.value);
-        });
-
-        document.getElementById('filterSlider').addEventListener('input', (e) => {
-            highPass = parseInt(e.target.value);
-        });
-
-        document.getElementById('btnHold').addEventListener('click', (e) => {
+        btnFreeze.addEventListener('click', () => {
             isPaused = !isPaused;
-            e.target.classList.toggle('active');
-            e.target.innerText = isPaused ? 'REANUDAR' : 'CONGELAR IMAGEN';
+            btnFreeze.classList.toggle('active');
         });
 
-        // --- Configuración WebSocket ---
-        // Aquí debes colocar la IP del ESP32 cuando actúe como Access Point
-        const gateway = `ws://192.168.4.1/ws`; 
-        let websocket;
-
-        function initWebSocket() {
-            console.log('Intentando abrir conexión WebSocket...');
-            websocket = new WebSocket(gateway);
-            websocket.binaryType = "arraybuffer"; // Clave para recibir datos rápidos de la FFT
-
-            websocket.onopen = onOpen;
-            websocket.onclose = onClose;
-            websocket.onmessage = onMessage;
-        }
-
-        function onOpen(event) {
-            console.log('Conexión abierta');
-            wsLed.classList.add('connected');
-        }
-
-        function onClose(event) {
-            console.log('Conexión cerrada. Reintentando...');
-            wsLed.classList.remove('connected');
-            setTimeout(initWebSocket, 2000);
-        }
-
-        // --- Procesamiento y Renderizado (DSP) ---
-        // Con una estructura clara y variables bien definidas como esta,
-        // herramientas como GitHub Copilot completarán rápidamente los bucles 
-        // de dibujo del espectrograma y el parseo del ArrayBuffer.
-        function onMessage(event) {
+        // Simulación de espectrograma con desplazamiento horizontal (de derecha a izquierda)
+        function drawHorizontalSpectrogram() {
             if (isPaused) return;
 
-            // 1. Recibir los datos de la FFT (ej. un arreglo de enteros de 8 bits)
-            // const dataArray = new Uint8Array(event.data);
-            
-            // 2. Encontrar el valor máximo para actualizar la Telemetría
-            // let maxVal = Math.max(...dataArray);
-            // peakOut.innerText = (maxVal * gain).toFixed(1) + " dB";
+            // 1. Desplazar la imagen un píxel hacia la izquierda
+            const imgData = ctx.getImageData(1, 0, canvas.width - 1, canvas.height);
+            ctx.putImageData(imgData, 0, 0);
 
-            // 3. Dibujar la cascada en el canvas (desplazar la imagen anterior hacia abajo y dibujar la nueva línea arriba)
-            drawSpectrogramLine(/* dataArray */);
+            // 2. Dibujar una nueva columna vertical de píxeles en el borde derecho
+            const xCoord = canvas.width - 1;
+            for (let y = 0; y < canvas.height; y++) {
+                // Generar patrones de frecuencia aleatorios simulando fugas (picos agudos)
+                let noise = Math.random();
+                let intensity = 0;
+
+                // Simular picos de bandas de frecuencia específicos de una fuga de agua
+                if (y > canvas.height * 0.3 && y < canvas.height * 0.7 && noise > 0.8) {
+                    intensity = Math.random() * 255;
+                } else {
+                    intensity = Math.random() * 30; // Ruido de fondo bajo
+                }
+
+                // Paleta de colores estilo mapa de calor industrial (Azul -> Verde -> Amarillo -> Blanco)
+                let r = intensity > 180 ? 255 : (intensity > 100 ? intensity : 0);
+                let g = intensity > 80 ? intensity : intensity * 0.5;
+                let b = intensity < 150 ? 255 - intensity : 0;
+
+                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                ctx.fillRect(xCoord, y, 1, 1);
+            }
+
+            // Actualizar valor numérico dinámico
+            let simulatedAmp = Math.floor(750 + Math.random() * 80);
+            amplitudeVal.innerText = simulatedAmp;
         }
 
-        function drawSpectrogramLine(/* dataArray */) {
-            // Aquí irá la lógica gráfica:
-            // - Mover el contexto ctx un pixel hacia abajo.
-            // - Recorrer el dataArray.
-            // - Aplicar el filtro highPass (ignorar índices bajos).
-            // - Multiplicar por 'gain'.
-            // - Asignar un color RGB al valor y pintar un pixel en la coordenada X correspondiente.
-        }
-
-        // Iniciar sistema
-        // Descomentar cuando el ESP32 esté programado y sirviendo datos:
-        // initWebSocket(); 
-        
+        // Ejecutar animación de cuadro a cuadro (aprox 30 FPS)
+        setInterval(drawHorizontalSpectrogram, 33);
     </script>
 </body>
 </html>
