@@ -4,153 +4,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQ-SPEC 1500 - Aurumsys SpA</title>
+    <title>AQ-SPEC 1500</title>
     <style>
-        :root {
-            --bg-dark: #0b0f12;
-            --panel-bg: #13181d;
-            --border-color: #2c3e50;
-            --accent-blue: #00d2ff;
-            --text-main: #ffffff;
-            --text-muted: #88a0b0;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
+            user-select: none;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: #0b0f12;
+            color: #ffffff;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
 
-        /* --- BARRA SUPERIOR DE ESTADO EXACTA --- */
+        /* Contenedor principal que simula la pantalla exacta de la foto */
+        .device-screen {
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            max-height: 750px;
+            background-color: #0f1418;
+            border: 4px solid #1a2228;
+            display: flex;
+            flex-direction: column;
+            padding: 8px;
+            gap: 6px;
+        }
+
+        /* --- BARRA SUPERIOR --- */
         .top-bar {
-            background-color: var(--panel-bg);
-            border-bottom: 2px solid var(--border-color);
+            background: linear-gradient(to right, #131b22, #1b2631, #131b22);
+            border: 1px solid #283845;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 8px 15px;
             font-size: 0.95rem;
+            color: #d0e0f0;
+            letter-spacing: 0.5px;
         }
 
-        .device-id {
-            color: var(--text-main);
-            font-weight: 500;
+        .top-status {
+            color: #a0c0d0;
         }
 
-        .system-status {
-            color: var(--text-main);
-        }
-
-        .status-ok {
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .status-icons {
+        .top-icons {
             display: flex;
             gap: 15px;
-            color: var(--text-muted);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
-        /* --- CONTENEDOR PRINCIPAL ADAPTATIVO --- */
-        .main-screen {
+        /* --- CUERPO PRINCIPAL (DISEÑO DE 3 COLUMNAS) --- */
+        .main-layout {
             flex: 1;
             display: grid;
+            grid-template-columns: 85px 1fr 85px;
             grid-template-rows: 62% 38%;
             gap: 6px;
-            padding: 8px;
-            background-color: #050709;
-            max-width: 1400px;
-            width: 100%;
-            margin: 0 auto;
         }
 
-        /* --- SECCIÓN SUPERIOR: 4 COLUMNAS EXACTAS (Botones Izq | Espectrograma | Botones Der) --- */
-        .spectrogram-section {
-            display: grid;
-            grid-template-columns: 90px 1fr 90px;
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        @media (max-width: 768px) {
-            .spectrogram-section {
-                grid-template-columns: 80px 1fr 80px;
-            }
-        }
-
-        .side-panel {
-            background-color: var(--panel-bg);
+        /* Panel Izquierdo (Botones) */
+        .left-panel {
+            grid-row: 1 / 3;
+            background-color: #12181f;
+            border: 1px solid #283845;
             display: flex;
             flex-direction: column;
             justify-content: space-around;
             align-items: center;
-            padding: 10px 4px;
+            padding: 15px 0;
         }
 
-        .side-panel.left {
-            border-right: 1px solid var(--border-color);
+        /* Panel Derecho (Botones) */
+        .right-panel {
+            grid-row: 1 / 3;
+            background-color: #12181f;
+            border: 1px solid #283845;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 0;
         }
 
-        .side-panel.right {
-            border-left: 1px solid var(--border-color);
-        }
-
-        /* --- BOTONES E ICONOS EXTRA GRANDES --- */
-        .screen-button {
+        /* Botón Táctil Estilo UI Industrial */
+        .ui-btn {
             background: transparent;
             border: none;
-            color: var(--text-muted);
-            width: 100%;
+            color: #70b0c0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 0.8rem;
             gap: 6px;
-            transition: all 0.2s;
-            padding: 8px 0;
+            width: 100%;
+            padding: 10px 0;
+            transition: color 0.2s;
         }
 
-        .screen-button:hover, .screen-button.active {
-            color: var(--accent-blue);
+        .ui-btn:hover, .ui-btn.active {
+            color: #00d2ff;
         }
 
-        .screen-button svg {
-            width: 36px;
-            height: 36px;
+        .ui-btn svg {
+            width: 32px;
+            height: 32px;
             fill: currentColor;
         }
 
-        @media (max-width: 768px) {
-            .screen-button svg {
-                width: 30px;
-                height: 30px;
-            }
-            .screen-button {
-                font-size: 0.75rem;
-            }
+        .ui-btn span {
+            font-size: 0.72rem;
+            text-align: center;
+            letter-spacing: 0.3px;
         }
 
-        .canvas-wrapper {
+        /* --- ZONA SUPERIOR: ESPECTROGRAMA --- */
+        .spectrogram-container {
+            grid-column: 2;
+            background-color: #000000;
+            border: 1px solid #283845;
             position: relative;
-            background-color: #000;
-            width: 100%;
-            height: 100%;
             overflow: hidden;
         }
 
@@ -160,195 +142,209 @@
             display: block;
         }
 
-        /* --- SECCIÓN INFERIOR: DIAGRAMA DE TUBERÍA Y VALORES --- */
-        .pipe-section {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
+        /* --- ZONA INFERIOR: GRÁFICO DE TUBERÍA Y VALORES --- */
+        .pipe-container {
+            grid-column: 2;
+            background-color: #12181f;
+            border: 1px solid #283845;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 10px 20px;
+            padding: 8px 15px 12px 15px;
             position: relative;
         }
 
-        .pipe-header-center {
+        .sensor-node-label {
             text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            font-size: 0.7rem;
+            color: #7090a0;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .graphic-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* Gráfico vectorial de la tubería idéntico a la imagen */
+        .pipe-graphic-area {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             position: relative;
         }
 
-        .pipe-graphic {
-            width: 65%;
-            max-width: 450px;
-            height: 32px;
-            background: linear-gradient(to bottom, #546e7a 0%, #37474f 50%, #263238 100%);
-            border-top: 2px solid #90a4ae;
-            border-bottom: 2px solid #1e272c;
+        .pipe-drawing {
+            width: 75%;
+            max-width: 480px;
+            height: 30px;
+            background: linear-gradient(to bottom, #5a7080 0%, #30404c 50%, #1a252e 100%);
+            border-top: 2px solid #8fa8b8;
+            border-bottom: 2px solid #141c24;
             position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
-            border-radius: 2px;
         }
 
-        .valve-center {
+        /* Válvula central con bridas y nodo */
+        .pipe-valve {
             position: absolute;
-            width: 48px;
+            width: 46px;
             height: 52px;
-            background: #455a64;
-            border: 2px solid #b0bec5;
-            top: -12px;
-            border-radius: 4px;
+            background: #3c505e;
+            border: 2px solid #9fb0be;
+            top: -11px;
+            border-radius: 3px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
 
-        .sensor-node-dot {
-            width: 10px;
-            height: 10px;
-            background-color: var(--accent-blue);
+        .node-dot {
+            width: 9px;
+            height: 9px;
+            background-color: #00e5ff;
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-blue);
+            box-shadow: 0 0 8px #00e5ff;
             margin-bottom: 2px;
         }
 
-        .leak-amplitude-text {
+        /* Texto de Amplitud central */
+        .amplitude-display {
             position: absolute;
-            bottom: 0px;
+            bottom: 2px;
             text-align: center;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            font-size: 0.7rem;
+            color: #8fa0b0;
             letter-spacing: 0.5px;
         }
 
-        .leak-amplitude-text span {
-            color: var(--text-main);
+        .amplitude-display .value {
+            color: #00e5ff;
             font-weight: bold;
-            font-size: 1rem;
+            font-size: 1.15rem;
+            display: block;
+            margin-top: 1px;
         }
 
-        /* --- BARRA DE FRECUENCIAS INFERIOR --- */
-        .freq-slider-bar {
+        /* Barra deslizante inferior de frecuencias (0 Hz - 8000 Hz) */
+        .frequency-slider-wrapper {
             display: flex;
             flex-direction: column;
             gap: 2px;
-            padding-top: 4px;
         }
 
         .slider-labels {
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            font-size: 0.72rem;
+            color: #7090a0;
         }
 
-        input[type="range"] {
+        .range-slider {
             width: 100%;
-            accent-color: var(--accent-blue);
+            appearance: none;
             height: 4px;
+            background: #283845;
+            outline: none;
+            border-radius: 2px;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #00e5ff;
             cursor: pointer;
+            box-shadow: 0 0 6px #00e5ff;
         }
     </style>
 </head>
 <body>
 
-    <!-- BARRA SUPERIOR EXACTA -->
-    <div class="top-bar">
-        <div class="device-id">AQ-SPEC 1500</div>
-        <div class="system-status">System Status: <span class="status-ok">Nominal</span></div>
-        <div class="status-icons">
-            <span>🗂️</span>
-            <span>🔊</span>
-            <span>🔋</span>
-        </div>
-    </div>
-
-    <!-- PANTALLA PRINCIPAL ADAPTATIVA -->
-    <div class="main-screen">
+    <div class="device-screen">
         
-        <!-- SECCIÓN SUPERIOR: Espectrograma Horizontal con Botones Grandes a los Costados -->
-        <div class="spectrogram-section">
-            <!-- Botones Izquierdos (Grandes) -->
-            <div class="side-panel left">
-                <button class="screen-button active" title="General Detection">
-                    <!-- Icono analizador de ondas -->
+        <!-- BARRA SUPERIOR EXACTA -->
+        <div class="top-bar">
+            <div class="top-brand">AQ-SPEC 1500</div>
+            <div class="top-status">System Status: Nominal</div>
+            <div class="top-icons">
+                <span>📁</span>
+                <span>🔊</span>
+                <span>🔋</span>
+            </div>
+        </div>
+
+        <!-- LAYOUT PRINCIPAL -->
+        <div class="main-layout">
+            
+            <!-- PANEL IZQUIERDO -->
+            <div class="left-panel">
+                <button class="ui-btn active" title="Signal Analyzer">
                     <svg viewBox="0 0 24 24"><path d="M3 3h2v18H3V3zm4 6h2v6H7V9zm4-4h2v14h-2V5zm4 2h2v10h-2V7zm4 4h2v6h-2v-6z"/></svg>
-                    <span>General</span>
+                    <span>Signal Analyzer</span>
                 </button>
-                <button class="screen-button" id="btnLocation" title="Location Mode">
-                    <!-- Icono mira / ubicación -->
-                    <svg viewBox="0 0 24 24"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
-                    <span>Location</span>
+                <button class="ui-btn" title="Leak Finder">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <span>Leak Finder</span>
                 </button>
             </div>
 
-            <!-- Visor del Espectrograma Horizontal (Simulado en tiempo real) -->
-            <div class="canvas-wrapper">
-                <canvas id="spectrogramCanvas"></canvas>
+            <!-- VISOR DE ESPECTROGRAMA HORIZONTAL -->
+            <div class="spectrogram-container">
+                <canvas id="specCanvas"></canvas>
             </div>
 
-            <!-- Botones Derechos (Grandes) -->
-            <div class="side-panel right">
-                <button class="screen-button" title="Data Log">
-                    <!-- Icono carpeta / registro -->
+            <!-- PANEL DERECHO -->
+            <div class="right-panel">
+                <button class="ui-btn" title="Data Log">
                     <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
                     <span>Data Log</span>
                 </button>
-                <button class="screen-button" title="Settings">
-                    <!-- Icono engranaje -->
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <button class="ui-btn" title="Settings">
+                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c-.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                     <span>Settings</span>
                 </button>
-            </div>
-        </div>
-
-        <!-- SECCIÓN INFERIOR: Tubería, Nodo y Amplitud EXACTOS -->
-        <div class="pipe-section">
-            <div class="pipe-header-center">
-                <span>sensor node</span>
+                <button class="ui-btn" title="Home">
+                    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                    <span>Home</span>
+                </button>
             </div>
 
-            <div class="graphic-container">
-                <div class="pipe-graphic">
-                    <div class="valve-center">
-                        <div class="sensor-node-dot"></div>
+            <!-- SECCIÓN INFERIOR: TUBERÍA Y VALORES -->
+            <div class="pipe-container">
+                <div class="sensor-node-label">sensor node</div>
+
+                <div class="pipe-graphic-area">
+                    <div class="pipe-drawing">
+                        <div class="pipe-valve">
+                            <div class="node-dot"></div>
+                        </div>
+                    </div>
+                    <div class="amplitude-display">
+                        LEAK SIGNATURE AMPLITUDE:
+                        <span class="value" id="ampVal">785</span>
                     </div>
                 </div>
-                <div class="leak-amplitude-text">
-                    LEAK SIGNATURE AMPLITUDE: <span id="amplitudeVal">785</span>
+
+                <div class="frequency-slider-wrapper">
+                    <div class="slider-labels">
+                        <span>0 Hz</span>
+                        <span>8000 Hz</span>
+                    </div>
+                    <input type="range" class="range-slider" min="0" max="8000" value="4000">
                 </div>
             </div>
 
-            <div class="freq-slider-bar">
-                <div class="slider-labels">
-                    <span>0 Hz</span>
-                    <span>8000 Hz</span>
-                </div>
-                <input type="range" id="freqRange" min="0" max="8000" value="4000">
-            </div>
         </div>
-
     </div>
 
-    <!-- SCRIPT DE SIMULACIÓN DEL ESPECTROGRAMA HORIZONTAL -->
+    <!-- SCRIPT DE ANIMACIÓN DEL ESPECTROGRAMA EN TIEMPO REAL -->
     <script>
-        const canvas = document.getElementById('spectrogramCanvas');
+        const canvas = document.getElementById('specCanvas');
         const ctx = canvas.getContext('2d', { alpha: false });
-        const amplitudeVal = document.getElementById('amplitudeVal');
+        const ampVal = document.getElementById('ampVal');
 
         function resizeCanvas() {
             canvas.width = canvas.parentElement.clientWidth;
@@ -359,41 +355,38 @@
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        // Animación fluida de desplazamiento horizontal (de derecha a izquierda)
-        function drawHorizontalSpectrogram() {
-            // 1. Desplazar imagen un pixel a la izquierda
+        function renderSpectrogram() {
+            // Desplazar la imagen un píxel a la izquierda para crear la cascada horizontal
             const imgData = ctx.getImageData(1, 0, canvas.width - 1, canvas.height);
             ctx.putImageData(imgData, 0, 0);
 
-            // 2. Pintar nueva columna en el borde derecho con bandas de frecuencia simuladas
-            const xCoord = canvas.width - 1;
+            const x = canvas.width - 1;
             for (let y = 0; y < canvas.height; y++) {
-                let noise = Math.random();
-                let intensity = 0;
+                let intensity = Math.random() * 25; // Ruido base oscuro
 
-                // Simular picos de bandas acústicas características de fugas presurizadas
-                if (y > canvas.height * 0.25 && y < canvas.height * 0.75 && noise > 0.8) {
+                // Simular picos de bandas acústicas de fugas (similares a la foto de referencia)
+                let normY = y / canvas.height;
+                if ((normY > 0.2 && normY < 0.8 && Math.random() > 0.82) || 
+                    (normY > 0.4 && normY < 0.6 && Math.random() > 0.7)) {
                     intensity = Math.random() * 255;
-                } else {
-                    intensity = Math.random() * 28; // Ruido base del entorno
                 }
 
-                // Paleta térmica exacta (Azul profundo -> Verde -> Amarillo brillante -> Blanco)
-                let r = intensity > 170 ? 255 : (intensity > 90 ? intensity : 0);
-                let g = intensity > 70 ? intensity : intensity * 0.4;
-                let b = intensity < 140 ? 255 - intensity : 0;
+                // Paleta de colores exacta: Azul oscuro -> Verde militar -> Amarillo brillante -> Blanco
+                let r = intensity > 180 ? 255 : (intensity > 90 ? intensity * 1.1 : 0);
+                let g = intensity > 60 ? intensity : intensity * 0.5;
+                let b = intensity < 150 ? 200 - intensity : 0;
 
-                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
-                ctx.fillRect(xCoord, y, 1, 1);
+                ctx.fillStyle = `rgb(${Math.min(r, 255)}, ${Math.min(g, 255)}, ${Math.min(b, 255)})`;
+                ctx.fillRect(x, y, 1, 1);
             }
 
-            // Actualizar valor de amplitud en pantalla dinámicamente
-            let simulatedAmp = Math.floor(770 + Math.random() * 30);
-            amplitudeVal.innerText = simulatedAmp;
+            // Variación realista del número de amplitud
+            let currentAmp = Math.floor(775 + Math.random() * 20);
+            ampVal.innerText = currentAmp;
         }
 
-        // Ejecutar bucle visual a ~30 cuadros por segundo
-        setInterval(drawHorizontalSpectrogram, 33);
+        // Ejecutar a ~30 cuadros por segundo
+        setInterval(renderSpectrogram, 33);
     </script>
 </body>
 </html>
