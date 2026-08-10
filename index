@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurumsys SpA - Detección Acústica</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --accent: #ff9800;
+            --text-main: #e0e0e0;
+            --text-muted: #888;
+            --danger: #f44336;
+            --success: #4caf50;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto Mono', monospace, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- ZONA SUPERIOR: ESTADO --- */
+        header {
+            background-color: var(--panel-bg);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #333;
+        }
+
+        .brand {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .telemetry {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .status-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--danger);
+            box-shadow: 0 0 5px var(--danger);
+        }
+        
+        .status-led.connected {
+            background-color: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        .peak-value {
+            background: #000;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            color: var(--accent);
+        }
+
+        /* --- ZONA CENTRAL: VISOR --- */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            gap: 10px;
+        }
+
+        .canvas-container {
+            flex: 1;
+            background-color: #000;
+            border: 1px solid #333;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* --- ZONA INFERIOR: CONTROLES --- */
+        .controls {
+            background-color: var(--panel-bg);
+            padding: 15px;
+            border-radius: 6px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        button {
+            background-color: #333;
+            color: var(--text-main);
+            border: 1px solid #555;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        button:active {
+            background-color: var(--accent);
+            color: #000;
+        }
+
+        button.active {
+            background-color: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ZONA SUPERIOR -->
+    <header>
+        <div class="brand">AURUMSYS SpA</div>
+        <div class="telemetry">
+            <div>Pico: <span class="peak-value" id="peakOut">0.0 dB</span></div>
+            <div class="status-led" id="wsLed"></div>
+        </div>
+    </header>
+
+    <!-- ZONA CENTRAL -->
+    <main>
+        <div class="canvas-container">
+            <!-- El canvas principal donde se dibujará la cascada de frecuencias -->
+            <canvas id="spectrogram"></canvas>
+        </div>
+    </main>
+
+    <!-- ZONA INFERIOR -->
+    <div class="controls">
+        <div class="control-group">
+            <label for="gainSlider">Ganancia (Sensibilidad)</label>
+            <input type="range" id="gainSlider" min="1" max="10" value="1" step="0.5">
+        </div>
+        <div class="control-group">
+            <label for="filterSlider">Filtro High-Pass (Ignorar Graves)</label>
+            <input type="range" id="filterSlider" min="0" max="2000" value="500" step="100">
+        </div>
+        <div class="control-group">
+            <label>&nbsp;</label>
+            <button id="btnHold">CONGELAR IMAGEN</button>
+        </div>
+    </div>
+
+    <!-- LÓGICA DE INTERFAZ Y COMUNICACIÓN -->
+    <script>
+        // --- Variables de Interfaz ---
+        const canvas = document.getElementById('spectrogram');
+        const ctx = canvas.getContext('2d', { alpha: false }); // Optimización para renderizado rápido
+        const wsLed = document.getElementById('wsLed');
+        const peakOut = document.getElementById('peakOut');
+        
+        let isPaused = false;
+        let gain = 1;
+        let highPass = 500;
+
+        // Ajustar el tamaño del canvas al contenedor real
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // --- Eventos de Controles ---
+        document.getElementById('gainSlider').addEventListener('input', (e) => {
+            gain = parseFloat(e.target.value);
+        });
+
+        document.getElementById('filterSlider').addEventListener('input', (e) => {
+            highPass = parseInt(e.target.value);
+        });
+
+        document.getElementById('btnHold').addEventListener('click', (e) => {
+            isPaused = !isPaused;
+            e.target.classList.toggle('active');
+            e.target.innerText = isPaused ? 'REANUDAR' : 'CONGELAR IMAGEN';
+        });
+
+        // --- Configuración WebSocket ---
+        // Aquí debes colocar la IP del ESP32 cuando actúe como Access Point
+        const gateway = `ws://192.168.4.1/ws`; 
+        let websocket;
+
+        function initWebSocket() {
+            console.log('Intentando abrir conexión WebSocket...');
+            websocket = new WebSocket(gateway);
+            websocket.binaryType = "arraybuffer"; // Clave para recibir datos rápidos de la FFT
+
+            websocket.onopen = onOpen;
+            websocket.onclose = onClose;
+            websocket.onmessage = onMessage;
+        }
+
+        function onOpen(event) {
+            console.log('Conexión abierta');
+            wsLed.classList.add('connected');
+        }
+
+        function onClose(event) {
+            console.log('Conexión cerrada. Reintentando...');
+            wsLed.classList.remove('connected');
+            setTimeout(initWebSocket, 2000);
+        }
+
+        // --- Procesamiento y Renderizado (DSP) ---
+        // Con una estructura clara y variables bien definidas como esta,
+        // herramientas como GitHub Copilot completarán rápidamente los bucles 
+        // de dibujo del espectrograma y el parseo del ArrayBuffer.
+        function onMessage(event) {
+            if (isPaused) return;
+
+            // 1. Recibir los datos de la FFT (ej. un arreglo de enteros de 8 bits)
+            // const dataArray = new Uint8Array(event.data);
+            
+            // 2. Encontrar el valor máximo para actualizar la Telemetría
+            // let maxVal = Math.max(...dataArray);
+            // peakOut.innerText = (maxVal * gain).toFixed(1) + " dB";
+
+            // 3. Dibujar la cascada en el canvas (desplazar la imagen anterior hacia abajo y dibujar la nueva línea arriba)
+            drawSpectrogramLine(/* dataArray */);
+        }
+
+        function drawSpectrogramLine(/* dataArray */) {
+            // Aquí irá la lógica gráfica:
+            // - Mover el contexto ctx un pixel hacia abajo.
+            // - Recorrer el dataArray.
+            // - Aplicar el filtro highPass (ignorar índices bajos).
+            // - Multiplicar por 'gain'.
+            // - Asignar un color RGB al valor y pintar un pixel en la coordenada X correspondiente.
+        }
+
+        // Iniciar sistema
+        // Descomentar cuando el ESP32 esté programado y sirviendo datos:
+        // initWebSocket(); 
+        
+    </script>
+</body>
+</html>
