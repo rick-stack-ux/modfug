@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQ-SPEC 1500 - Exact UI Replica</title>
+    <title>AQ-SPEC 1500 - Exact Interactive UI</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,8 +14,7 @@
         }
 
         body {
-            background-color: #05080a; /* Entorno oscuro exterior */
-            color: #ffffff;
+            background-color: #06090c; /* Entorno oscuro exterior */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -24,14 +23,14 @@
             overflow: hidden;
         }
 
-        /* Contenedor principal que simula la pantalla exacta */
+        /* Contenedor principal que simula la pantalla */
         .device-screen {
             width: 100%;
             height: 100%;
-            max-width: 1100px;
-            max-height: 700px;
-            background-color: #0b1014;
-            border: 2px solid #1c2730;
+            max-width: 1050px;
+            max-height: 680px;
+            background-color: #0d1217;
+            border: 1px solid #1a252f;
             display: flex;
             flex-direction: column;
             gap: 2px;
@@ -39,18 +38,18 @@
 
         /* --- BARRA SUPERIOR --- */
         .top-bar {
-            background: linear-gradient(to right, #111a21, #17232d, #111a21);
-            border-bottom: 1px solid #1c2a36;
+            background: linear-gradient(to right, #111a22, #182530, #111a22);
+            border-bottom: 1px solid #1d2b36;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 45px;
+            height: 42px;
             padding: 0 15px;
         }
 
         .top-brand {
-            font-size: 1.05rem;
-            color: #d0e5f2;
+            font-size: 1rem;
+            color: #dbeaf5;
             letter-spacing: 0.5px;
             width: 25%;
         }
@@ -63,46 +62,53 @@
         }
 
         .top-status {
-            background: linear-gradient(to bottom, #1d2d3a, #111a22);
-            color: #d0e5f2;
-            font-size: 0.95rem;
-            padding: 0 40px;
+            background: linear-gradient(to bottom, #213342, #131d25);
+            color: #dbeaf5;
+            font-size: 0.9rem;
+            padding: 0 45px;
             display: flex;
             align-items: center;
             justify-content: center;
-            clip-path: polygon(8% 0, 92% 0, 100% 100%, 0% 100%);
-            border-bottom: 2px solid #00c3d9;
-            box-shadow: inset 0 -1px 3px rgba(0, 195, 217, 0.3);
+            clip-path: polygon(6% 0, 94% 0, 100% 100%, 0% 100%);
+            border-bottom: 2px solid #00e5ff;
+            box-shadow: inset 0 -1px 4px rgba(0, 229, 255, 0.4);
+            transition: all 0.3s ease;
         }
 
         .top-icons {
             width: 25%;
             display: flex;
             justify-content: flex-end;
-            gap: 15px;
-            color: #00c3d9;
+            gap: 12px;
+            color: #00c8e0;
         }
 
         .top-icons svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: currentColor;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .top-icons svg:hover {
+            color: #ffffff;
         }
 
-        /* --- CUERPO PRINCIPAL (DISEÑO 3 COLUMNAS) --- */
+        /* --- CUERPO PRINCIPAL --- */
         .main-layout {
             flex: 1;
             display: grid;
-            grid-template-columns: 85px 1fr 85px;
-            grid-template-rows: 55% 45%;
+            grid-template-columns: 90px 1fr 90px;
+            grid-template-rows: 56% 44%;
             gap: 2px;
             padding: 2px;
         }
 
         /* Paneles Laterales */
         .side-panel {
-            background-color: #121920;
-            border: 1px solid #1c2a36;
+            background-color: #11181e;
+            border: 1px solid #1d2b36;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -112,56 +118,66 @@
         .left-panel {
             grid-row: 1 / 3;
             justify-content: flex-start;
-            gap: 25px;
+            gap: 20px;
         }
 
         .right-panel {
             grid-row: 1 / 3;
-            justify-content: center;
-            gap: 30px;
+            justify-content: space-around;
         }
 
-        /* Botones de UI */
+        /* Botones Interactivos */
         .ui-btn {
             background: transparent;
             border: none;
-            color: #b0c9d6;
+            color: #a4bfd1;
             display: flex;
             flex-direction: column;
             align-items: center;
             cursor: pointer;
             width: 100%;
-            transition: color 0.2s;
+            transition: all 0.2s;
         }
 
-        .ui-btn:hover, .ui-btn.active {
+        .ui-btn:hover {
+            color: #00e5ff;
+        }
+
+        .ui-btn.active {
             color: #00e5ff;
         }
 
         .ui-btn .icon-box {
-            border: 1.5px solid #2f5f6f;
+            border: 1.5px solid #304659;
             border-radius: 8px;
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .ui-btn:active .icon-box {
+            transform: scale(0.92);
         }
 
         .ui-btn.active .icon-box {
             border-color: #00e5ff;
-            background-color: rgba(0, 229, 255, 0.05);
+            background-color: rgba(0, 229, 255, 0.08);
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
         }
 
         .ui-btn.no-box .icon-box {
             border: none;
             background: transparent;
+            box-shadow: none;
         }
 
         .ui-btn svg {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             fill: currentColor;
         }
 
@@ -169,14 +185,14 @@
             font-size: 0.7rem;
             text-align: center;
             line-height: 1.2;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
         }
 
         /* --- ZONA SUPERIOR: ESPECTROGRAMA --- */
         .spectrogram-container {
             grid-column: 2;
-            background-color: #000411;
-            border: 1px solid #1c2a36;
+            background-color: #020612;
+            border: 1px solid #1d2b36;
             position: relative;
             overflow: hidden;
         }
@@ -187,30 +203,27 @@
             display: block;
         }
 
-        /* Barra vertical de colores a la derecha del espectrograma */
         .color-scale {
             position: absolute;
             right: 0;
             top: 0;
             bottom: 0;
             width: 8px;
-            background: linear-gradient(to bottom, #ffff00 5%, #00ff00 30%, #00ffff 60%, #00008b 90%, #000000 100%);
-            border-left: 1px solid #111;
+            background: linear-gradient(to bottom, #ffff00 2%, #00ff00 25%, #00e5ff 60%, #00008b 90%, #000000 100%);
+            border-left: 1px solid #000;
         }
 
-        /* --- ZONA INFERIOR: GRÁFICO DE TUBERÍA Y VALORES --- */
+        /* --- ZONA INFERIOR: TUBERÍA --- */
         .pipe-container {
             grid-column: 2;
-            background-color: #121920;
-            border: 1px solid #1c2a36;
+            background-color: #11181e;
+            border: 1px solid #1d2b36;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 10px 20px 15px 20px;
-            position: relative;
+            padding: 8px 20px 15px 20px;
         }
 
-        /* Gráfico SVG de la Tubería */
         .pipe-graphic-area {
             flex: 1;
             display: flex;
@@ -218,33 +231,34 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            margin-top: -10px;
+            margin-top: -15px;
         }
 
         .pipe-svg-wrapper {
             width: 100%;
-            max-width: 450px;
-            height: 90px;
+            max-width: 480px;
+            height: 85px;
             position: relative;
         }
 
-        /* Texto Amplitude */
         .amplitude-display {
             text-align: center;
             font-size: 0.75rem;
-            color: #d0e5f2;
+            color: #dbeaf5;
             letter-spacing: 0.5px;
-            margin-top: -5px;
+            margin-top: -2px;
         }
 
         .amplitude-display .value {
             color: #00e5ff;
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             display: block;
             margin-top: 2px;
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+            transition: color 0.3s;
         }
 
-        /* --- SLIDER DE FRECUENCIAS --- */
+        /* --- SLIDER --- */
         .frequency-slider-wrapper {
             display: flex;
             align-items: center;
@@ -254,8 +268,8 @@
         }
 
         .frequency-slider-wrapper span {
-            font-size: 0.75rem;
-            color: #d0e5f2;
+            font-size: 0.7rem;
+            color: #a4bfd1;
             white-space: nowrap;
         }
 
@@ -263,7 +277,7 @@
             flex: 1;
             appearance: none;
             height: 4px;
-            background: #283a48;
+            background: #233442;
             outline: none;
             border-radius: 2px;
         }
@@ -273,13 +287,15 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: #b0c9d6;
+            background: #a4bfd1;
             cursor: pointer;
-            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+            box-shadow: 0 0 4px rgba(0,0,0,0.8);
+            transition: background 0.2s;
         }
         
-        .range-slider::-webkit-slider-thumb:hover {
+        .range-slider::-webkit-slider-thumb:hover, .range-slider:active::-webkit-slider-thumb {
             background: #00e5ff;
+            box-shadow: 0 0 8px #00e5ff;
         }
     </style>
 </head>
@@ -287,18 +303,15 @@
 
     <div class="device-screen">
         
-        <!-- BARRA SUPERIOR EXACTA -->
+        <!-- BARRA SUPERIOR -->
         <div class="top-bar">
             <div class="top-brand">AQ-SPEC 1500</div>
             <div class="top-status-container">
-                <div class="top-status">System Status: Nominal</div>
+                <div class="top-status" id="sysStatus">System Status: Nominal</div>
             </div>
             <div class="top-icons">
-                <!-- Icono Gráfico -->
                 <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
-                <!-- Icono Altavoz -->
-                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                <!-- Icono Batería -->
+                <svg viewBox="0 0 24 24" id="audioIcon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                 <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4zM11 20v-5.5H9L13 7v5.5h2L11 20z"/></svg>
             </div>
         </div>
@@ -308,13 +321,13 @@
             
             <!-- PANEL IZQUIERDO -->
             <div class="side-panel left-panel">
-                <button class="ui-btn active">
+                <button class="ui-btn active" id="btnSignal">
                     <div class="icon-box">
                         <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 8l4-4 4 4 4-4v6H7v-2z"/></svg>
                     </div>
                     <span>Signal<br>Analyzer</span>
                 </button>
-                <button class="ui-btn">
+                <button class="ui-btn" id="btnLeak">
                     <div class="icon-box">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm-1 2h2v-2h-2v2zm0-4h2V7h-2v5z"/></svg>
                     </div>
@@ -330,19 +343,19 @@
 
             <!-- PANEL DERECHO -->
             <div class="side-panel right-panel">
-                <button class="ui-btn no-box">
+                <button class="ui-btn no-box" id="btnLog">
                     <div class="icon-box">
                         <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10zM12 15l-3-3h2v-4h2v4h2l-3 3z"/></svg>
                     </div>
                     <span>Data Log</span>
                 </button>
-                <button class="ui-btn no-box">
+                <button class="ui-btn no-box" id="btnSettings">
                     <div class="icon-box">
                         <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
                     </div>
                     <span>Settings</span>
                 </button>
-                <button class="ui-btn no-box">
+                <button class="ui-btn no-box" id="btnHome">
                     <div class="icon-box">
                         <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
                     </div>
@@ -350,37 +363,36 @@
                 </button>
             </div>
 
-            <!-- SECCIÓN INFERIOR: TUBERÍA EXACTA Y VALORES -->
+            <!-- SECCIÓN INFERIOR: TUBERÍA Y VALORES -->
             <div class="pipe-container">
                 
                 <div class="pipe-graphic-area">
-                    <!-- SVG para replicar exactamente la forma de la tubería 3D -->
                     <div class="pipe-svg-wrapper">
-                        <!-- Etiqueta Sensor Node con pequeña flecha -->
-                        <div style="position: absolute; top: -5px; left: 50%; transform: translateX(-50%); text-align: center;">
-                            <span style="font-size: 0.7rem; color: #d0e5f2;">sensor node</span>
-                            <svg width="20" height="20" style="display: block; margin: -2px auto 0 auto;">
-                                <path d="M 10 2 Q 15 2 15 12" fill="none" stroke="#00e5ff" stroke-width="1.5" />
-                                <polygon points="12,9 15,14 18,9" fill="#00e5ff" />
+                        <!-- Etiqueta Sensor Node -->
+                        <div style="position: absolute; top: 0px; left: 50%; transform: translateX(-50%); text-align: center;">
+                            <span style="font-size: 0.7rem; color: #dbeaf5;">sensor node</span>
+                            <svg width="20" height="15" style="display: block; margin: -2px auto 0 auto;">
+                                <path d="M 10 2 Q 15 2 15 9" fill="none" stroke="#00e5ff" stroke-width="1.5" />
+                                <polygon points="12,7 15,12 18,7" fill="#00e5ff" />
                             </svg>
                         </div>
                         
                         <svg width="100%" height="100%" viewBox="0 0 450 100" preserveAspectRatio="none">
                             <defs>
                                 <linearGradient id="pipeGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#9baab5"/>
-                                    <stop offset="25%" stop-color="#dce5ec"/>
-                                    <stop offset="50%" stop-color="#677c8b"/>
-                                    <stop offset="85%" stop-color="#2c3a44"/>
-                                    <stop offset="100%" stop-color="#11181d"/>
+                                    <stop offset="0%" stop-color="#8a9ba8"/>
+                                    <stop offset="20%" stop-color="#ced8e0"/>
+                                    <stop offset="50%" stop-color="#55697a"/>
+                                    <stop offset="85%" stop-color="#24313b"/>
+                                    <stop offset="100%" stop-color="#0c1218"/>
                                 </linearGradient>
                                 <linearGradient id="flangeGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#a0b5c5"/>
-                                    <stop offset="50%" stop-color="#4d6271"/>
-                                    <stop offset="100%" stop-color="#151e25"/>
+                                    <stop offset="0%" stop-color="#90a5b5"/>
+                                    <stop offset="50%" stop-color="#425564"/>
+                                    <stop offset="100%" stop-color="#11181e"/>
                                 </linearGradient>
                                 <filter id="glow">
-                                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                                    <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
                                     <feMerge>
                                         <feMergeNode in="coloredBlur"/>
                                         <feMergeNode in="SourceGraphic"/>
@@ -388,50 +400,39 @@
                                 </filter>
                             </defs>
                             
-                            <!-- Tubo Izquierdo Inferior -->
-                            <rect x="0" y="70" width="100" height="22" fill="url(#pipeGrad)" />
-                            <!-- Brida 1 -->
-                            <rect x="94" y="65" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
+                            <!-- Tubos y Bridas -->
+                            <rect x="0" y="70" width="100" height="24" fill="url(#pipeGrad)" />
+                            <rect x="94" y="65" width="12" height="34" fill="url(#flangeGrad)" rx="2" />
                             
-                            <!-- Curva S Izquierda -->
-                            <path d="M 104 81 C 135 81, 135 41, 166 41" fill="none" stroke="url(#pipeGrad)" stroke-width="22" />
+                            <!-- Curvas S -->
+                            <path d="M 106 82 C 140 82, 135 41, 166 41" fill="none" stroke="url(#pipeGrad)" stroke-width="24" />
                             
-                            <!-- Brida 2 -->
-                            <rect x="156" y="25" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
+                            <rect x="156" y="24" width="12" height="34" fill="url(#flangeGrad)" rx="2" />
+                            <rect x="168" y="29" width="114" height="24" fill="url(#pipeGrad)" />
+                            <rect x="282" y="24" width="12" height="34" fill="url(#flangeGrad)" rx="2" />
                             
-                            <!-- Tubo Central -->
-                            <rect x="166" y="30" width="118" height="22" fill="url(#pipeGrad)" />
+                            <path d="M 294 41 C 315 41, 310 82, 344 82" fill="none" stroke="url(#pipeGrad)" stroke-width="24" />
                             
-                            <!-- Brida 3 -->
-                            <rect x="284" y="25" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
-                            
-                            <!-- Curva S Derecha -->
-                            <path d="M 294 41 C 325 41, 325 81, 356 81" fill="none" stroke="url(#pipeGrad)" stroke-width="22" />
-                            
-                            <!-- Brida 4 -->
-                            <rect x="346" y="65" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
-                            
-                            <!-- Tubo Derecho Inferior -->
-                            <rect x="356" y="70" width="94" height="22" fill="url(#pipeGrad)" />
+                            <rect x="344" y="65" width="12" height="34" fill="url(#flangeGrad)" rx="2" />
+                            <rect x="356" y="70" width="94" height="24" fill="url(#pipeGrad)" />
 
-                            <!-- Válvula / Nodo Central -->
-                            <circle cx="225" cy="41" r="16" fill="#2b3a45" stroke="#7a8c98" stroke-width="2"/>
+                            <!-- Válvula Central Illuminada -->
+                            <circle cx="225" cy="41" r="18" fill="#212e38" stroke="#687e91" stroke-width="2"/>
                             <circle cx="225" cy="41" r="6" fill="#00ffff" />
-                            <circle cx="225" cy="41" r="6" fill="none" stroke="#00ffff" stroke-width="2" filter="url(#glow)"/>
+                            <circle cx="225" cy="41" r="7" fill="none" stroke="#00ffff" stroke-width="2" filter="url(#glow)" id="nodeGlow"/>
                         </svg>
                     </div>
                     
-                    <!-- Textos de Amplitud -->
                     <div class="amplitude-display">
                         LEAK SIGNATURE AMPLITUDE:
                         <span class="value" id="ampVal">785</span>
                     </div>
                 </div>
 
-                <!-- Slider Inferior -->
+                <!-- Slider Funcional -->
                 <div class="frequency-slider-wrapper">
                     <span>0 Hz</span>
-                    <input type="range" class="range-slider" min="0" max="8000" value="4000">
+                    <input type="range" class="range-slider" id="sensitivitySlider" min="0" max="100" value="50">
                     <span>8000 Hz</span>
                 </div>
             </div>
@@ -439,72 +440,134 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE SIMULACIÓN EXACTA DEL ESPECTROGRAMA -->
+    <!-- JAVASCRIPT: LÓGICA Y FUNCIONALIDAD -->
     <script>
+        // --- 1. Variables Globales y Elementos UI ---
         const canvas = document.getElementById('specCanvas');
         const ctx = canvas.getContext('2d', { alpha: false });
         const ampVal = document.getElementById('ampVal');
+        const sysStatus = document.getElementById('sysStatus');
+        const sensitivitySlider = document.getElementById('sensitivitySlider');
+        const nodeGlow = document.getElementById('nodeGlow');
+        
+        let isLeakFinderMode = false;
+        let timeOffset = 0;
 
+        // --- 2. Ajuste de Pantalla ---
         function resizeCanvas() {
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
-            ctx.fillStyle = "#000411";
+            ctx.fillStyle = "#020612"; // Fondo oscuro por defecto
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
-        let timeOffset = 0;
+        // --- 3. Lógica de Botones (Interactividad) ---
+        const btnSignal = document.getElementById('btnSignal');
+        const btnLeak = document.getElementById('btnLeak');
 
+        btnSignal.addEventListener('click', () => {
+            btnLeak.classList.remove('active');
+            btnSignal.classList.add('active');
+            isLeakFinderMode = false;
+            sysStatus.innerText = "System Status: Nominal";
+            sysStatus.style.borderBottomColor = "#00e5ff";
+            ampVal.style.color = "#00e5ff";
+            nodeGlow.setAttribute("stroke", "#00ffff");
+        });
+
+        btnLeak.addEventListener('click', () => {
+            btnSignal.classList.remove('active');
+            btnLeak.classList.add('active');
+            isLeakFinderMode = true; // Activa algoritmo de fuga
+            sysStatus.innerText = "System Status: Leak Detected";
+            sysStatus.style.borderBottomColor = "#ff3366"; // Alerta visual
+            ampVal.style.color = "#ff3366";
+            nodeGlow.setAttribute("stroke", "#ff3366");
+        });
+
+        document.getElementById('btnLog').addEventListener('click', function() {
+            sysStatus.innerText = "Saving Data to Log...";
+            setTimeout(() => sysStatus.innerText = isLeakFinderMode ? "System Status: Leak Detected" : "System Status: Nominal", 2000);
+        });
+
+        document.getElementById('btnSettings').addEventListener('click', function() {
+            sysStatus.innerText = "Entering Configuration...";
+        });
+
+        document.getElementById('btnHome').addEventListener('click', function() {
+            location.reload(); // Reinicia la UI
+        });
+
+        document.getElementById('audioIcon').addEventListener('click', function() {
+            this.style.color = this.style.color === 'red' ? '#00c8e0' : 'red'; // Mute toggle
+        });
+
+
+        // --- 4. Motor de Renderizado del Espectrograma (Tiempo Real) ---
         function renderSpectrogram() {
-            // Desplazar imagen un píxel a la izquierda
+            // Desplazamiento horizontal fluido
             const imgData = ctx.getImageData(1, 0, canvas.width - 1, canvas.height);
             ctx.putImageData(imgData, 0, 0);
 
             const x = canvas.width - 1;
-            timeOffset += 0.1;
+            timeOffset += (isLeakFinderMode ? 0.2 : 0.1); // Acelera en modo Leak
+            
+            // Valor del slider afecta el "ruido de fondo" o sensibilidad (0 a 1)
+            let sensitivity = sensitivitySlider.value / 100;
 
             for (let y = 0; y < canvas.height; y++) {
-                let intensity = Math.random() * 20; // Ruido base muy oscuro
                 let normY = y / canvas.height;
+                let intensity = Math.random() * (15 + (sensitivity * 20)); // Ruido base afectado por slider
 
-                // Generar los picos característicos de la imagen
-                if (Math.random() > 0.95) {
-                    // Pico estrecho brillante aleatorio
-                    intensity = Math.random() * 255;
-                } else if (normY > 0.25 && normY < 0.75) {
-                    // Banda central con picos anchos
-                    let wave = Math.sin(timeOffset + normY * 10) * Math.cos(timeOffset * 0.5);
-                    if (wave > 0.7) {
-                        intensity = (wave - 0.7) * 850 + Math.random() * 50;
-                    } else if (Math.random() > 0.88) {
-                        intensity = Math.random() * 150;
+                if (isLeakFinderMode) {
+                    // MODO LEAK FINDER: Resalta solo frecuencias altas simulando una fuga
+                    if (normY > 0.4 && normY < 0.55 && Math.random() > 0.6) {
+                        intensity = Math.random() * 255 * sensitivity * 2;
+                    }
+                } else {
+                    // MODO NORMAL: Replica los picos de la imagen original
+                    if (Math.random() > 0.96) {
+                        intensity = Math.random() * 255 * sensitivity * 1.5;
+                    } else if (normY > 0.2 && normY < 0.8) {
+                        let wave = Math.sin(timeOffset + normY * 12) * Math.cos(timeOffset * 0.4);
+                        if (wave > 0.75) {
+                            intensity = (wave - 0.75) * 800 * sensitivity;
+                        } else if (Math.random() > 0.85) {
+                            intensity = Math.random() * 120 * sensitivity;
+                        }
                     }
                 }
 
-                // Aplicar paleta exacta: Oscuro -> Cyan -> Verde -> Amarillo
-                let r = intensity > 170 ? 255 : (intensity > 100 ? (intensity-100)*3.5 : 0);
-                let g = intensity > 60 ? intensity * 1.2 : intensity * 0.4;
-                let b = intensity < 160 ? 180 - intensity : 0;
+                // Paleta de colores térmica exacta
+                let r = intensity > 160 ? 255 : (intensity > 90 ? (intensity-90)*3.5 : 0);
+                let g = intensity > 60 ? intensity * 1.3 : intensity * 0.5;
+                let b = intensity < 150 ? 190 - intensity : 0;
 
                 // Evitar desbordamientos
                 r = Math.min(255, Math.max(0, r));
                 g = Math.min(255, Math.max(0, g));
                 b = Math.min(255, Math.max(0, b));
 
-                // Fondo base azul muy oscuro
-                if(intensity < 25) { r = 0; g = 5; b = 30 + intensity; }
+                // Fondo base
+                if(intensity < 20) { r = 0; g = 3; b = 25 + intensity; }
+                
+                // Si está en modo fuga y el pico es alto, saturarlo hacia rojo/blanco para alertar
+                if(isLeakFinderMode && intensity > 200) { r = 255; g = 100; b = 100; }
 
                 ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
                 ctx.fillRect(x, y, 1, 1);
             }
 
-            // Variación realista de amplitud
-            let currentAmp = Math.floor(775 + Math.random() * 20);
+            // --- 5. Cálculo y Actualización de Amplitud ---
+            // La amplitud base es ~700, sube si está en modo fuga y es afectada por el slider
+            let baseAmp = isLeakFinderMode ? 850 : 775;
+            let currentAmp = Math.floor(baseAmp + (Math.random() * 30) * sensitivity);
             ampVal.innerText = currentAmp;
         }
 
-        // Ejecutar a ~30 cuadros por segundo
+        // Ejecutar bucle de animación a ~30 cuadros por segundo
         setInterval(renderSpectrogram, 33);
     </script>
 </body>
