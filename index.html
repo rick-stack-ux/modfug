@@ -1,21 +1,20 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AQ-SPEC 1500</title>
+    <title>AQ-SPEC 1500 - Exact UI Replica</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             user-select: none;
         }
 
         body {
-            background-color: #0b0f12;
+            background-color: #05080a; /* Entorno oscuro exterior */
             color: #ffffff;
             display: flex;
             justify-content: center;
@@ -25,113 +24,159 @@
             overflow: hidden;
         }
 
-        /* Contenedor principal que simula la pantalla exacta de la foto */
+        /* Contenedor principal que simula la pantalla exacta */
         .device-screen {
             width: 100%;
             height: 100%;
-            max-width: 1200px;
-            max-height: 750px;
-            background-color: #0f1418;
-            border: 4px solid #1a2228;
+            max-width: 1100px;
+            max-height: 700px;
+            background-color: #0b1014;
+            border: 2px solid #1c2730;
             display: flex;
             flex-direction: column;
-            padding: 8px;
-            gap: 6px;
+            gap: 2px;
         }
 
         /* --- BARRA SUPERIOR --- */
         .top-bar {
-            background: linear-gradient(to right, #131b22, #1b2631, #131b22);
-            border: 1px solid #283845;
+            background: linear-gradient(to right, #111a21, #17232d, #111a21);
+            border-bottom: 1px solid #1c2a36;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 15px;
-            font-size: 0.95rem;
-            color: #d0e0f0;
+            height: 45px;
+            padding: 0 15px;
+        }
+
+        .top-brand {
+            font-size: 1.05rem;
+            color: #d0e5f2;
             letter-spacing: 0.5px;
+            width: 25%;
+        }
+
+        .top-status-container {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            height: 100%;
         }
 
         .top-status {
-            color: #a0c0d0;
+            background: linear-gradient(to bottom, #1d2d3a, #111a22);
+            color: #d0e5f2;
+            font-size: 0.95rem;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            clip-path: polygon(8% 0, 92% 0, 100% 100%, 0% 100%);
+            border-bottom: 2px solid #00c3d9;
+            box-shadow: inset 0 -1px 3px rgba(0, 195, 217, 0.3);
         }
 
         .top-icons {
+            width: 25%;
             display: flex;
+            justify-content: flex-end;
             gap: 15px;
-            font-size: 1rem;
+            color: #00c3d9;
         }
 
-        /* --- CUERPO PRINCIPAL (DISEÑO DE 3 COLUMNAS) --- */
+        .top-icons svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* --- CUERPO PRINCIPAL (DISEÑO 3 COLUMNAS) --- */
         .main-layout {
             flex: 1;
             display: grid;
             grid-template-columns: 85px 1fr 85px;
-            grid-template-rows: 62% 38%;
-            gap: 6px;
+            grid-template-rows: 55% 45%;
+            gap: 2px;
+            padding: 2px;
         }
 
-        /* Panel Izquierdo (Botones) */
+        /* Paneles Laterales */
+        .side-panel {
+            background-color: #121920;
+            border: 1px solid #1c2a36;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+        }
+
         .left-panel {
             grid-row: 1 / 3;
-            background-color: #12181f;
-            border: 1px solid #283845;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
-            padding: 15px 0;
+            justify-content: flex-start;
+            gap: 25px;
         }
 
-        /* Panel Derecho (Botones) */
         .right-panel {
             grid-row: 1 / 3;
-            background-color: #12181f;
-            border: 1px solid #283845;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
-            padding: 15px 0;
+            justify-content: center;
+            gap: 30px;
         }
 
-        /* Botón Táctil Estilo UI Industrial */
+        /* Botones de UI */
         .ui-btn {
             background: transparent;
             border: none;
-            color: #70b0c0;
+            color: #b0c9d6;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             cursor: pointer;
-            gap: 6px;
             width: 100%;
-            padding: 10px 0;
             transition: color 0.2s;
         }
 
         .ui-btn:hover, .ui-btn.active {
-            color: #00d2ff;
+            color: #00e5ff;
+        }
+
+        .ui-btn .icon-box {
+            border: 1.5px solid #2f5f6f;
+            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .ui-btn.active .icon-box {
+            border-color: #00e5ff;
+            background-color: rgba(0, 229, 255, 0.05);
+        }
+
+        .ui-btn.no-box .icon-box {
+            border: none;
+            background: transparent;
         }
 
         .ui-btn svg {
-            width: 32px;
-            height: 32px;
+            width: 26px;
+            height: 26px;
             fill: currentColor;
         }
 
         .ui-btn span {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             text-align: center;
-            letter-spacing: 0.3px;
+            line-height: 1.2;
+            letter-spacing: 0.2px;
         }
 
         /* --- ZONA SUPERIOR: ESPECTROGRAMA --- */
         .spectrogram-container {
             grid-column: 2;
-            background-color: #000000;
-            border: 1px solid #283845;
+            background-color: #000411;
+            border: 1px solid #1c2a36;
             position: relative;
             overflow: hidden;
         }
@@ -142,27 +187,30 @@
             display: block;
         }
 
+        /* Barra vertical de colores a la derecha del espectrograma */
+        .color-scale {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            background: linear-gradient(to bottom, #ffff00 5%, #00ff00 30%, #00ffff 60%, #00008b 90%, #000000 100%);
+            border-left: 1px solid #111;
+        }
+
         /* --- ZONA INFERIOR: GRÁFICO DE TUBERÍA Y VALORES --- */
         .pipe-container {
             grid-column: 2;
-            background-color: #12181f;
-            border: 1px solid #283845;
+            background-color: #121920;
+            border: 1px solid #1c2a36;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 8px 15px 12px 15px;
+            padding: 10px 20px 15px 20px;
             position: relative;
         }
 
-        .sensor-node-label {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #7090a0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Gráfico vectorial de la tubería idéntico a la imagen */
+        /* Gráfico SVG de la Tubería */
         .pipe-graphic-area {
             flex: 1;
             display: flex;
@@ -170,82 +218,52 @@
             align-items: center;
             justify-content: center;
             position: relative;
+            margin-top: -10px;
         }
 
-        .pipe-drawing {
-            width: 75%;
-            max-width: 480px;
-            height: 30px;
-            background: linear-gradient(to bottom, #5a7080 0%, #30404c 50%, #1a252e 100%);
-            border-top: 2px solid #8fa8b8;
-            border-bottom: 2px solid #141c24;
+        .pipe-svg-wrapper {
+            width: 100%;
+            max-width: 450px;
+            height: 90px;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
-        /* Válvula central con bridas y nodo */
-        .pipe-valve {
-            position: absolute;
-            width: 46px;
-            height: 52px;
-            background: #3c505e;
-            border: 2px solid #9fb0be;
-            top: -11px;
-            border-radius: 3px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .node-dot {
-            width: 9px;
-            height: 9px;
-            background-color: #00e5ff;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #00e5ff;
-            margin-bottom: 2px;
-        }
-
-        /* Texto de Amplitud central */
+        /* Texto Amplitude */
         .amplitude-display {
-            position: absolute;
-            bottom: 2px;
             text-align: center;
-            font-size: 0.7rem;
-            color: #8fa0b0;
+            font-size: 0.75rem;
+            color: #d0e5f2;
             letter-spacing: 0.5px;
+            margin-top: -5px;
         }
 
         .amplitude-display .value {
             color: #00e5ff;
-            font-weight: bold;
-            font-size: 1.15rem;
+            font-size: 1.4rem;
             display: block;
-            margin-top: 1px;
+            margin-top: 2px;
         }
 
-        /* Barra deslizante inferior de frecuencias (0 Hz - 8000 Hz) */
+        /* --- SLIDER DE FRECUENCIAS --- */
         .frequency-slider-wrapper {
             display: flex;
-            flex-direction: column;
-            gap: 2px;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 0 10px;
         }
 
-        .slider-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.72rem;
-            color: #7090a0;
+        .frequency-slider-wrapper span {
+            font-size: 0.75rem;
+            color: #d0e5f2;
+            white-space: nowrap;
         }
 
         .range-slider {
-            width: 100%;
+            flex: 1;
             appearance: none;
             height: 4px;
-            background: #283845;
+            background: #283a48;
             outline: none;
             border-radius: 2px;
         }
@@ -255,9 +273,13 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: #00e5ff;
+            background: #b0c9d6;
             cursor: pointer;
-            box-shadow: 0 0 6px #00e5ff;
+            box-shadow: 0 0 4px rgba(0,0,0,0.5);
+        }
+        
+        .range-slider::-webkit-slider-thumb:hover {
+            background: #00e5ff;
         }
     </style>
 </head>
@@ -268,11 +290,16 @@
         <!-- BARRA SUPERIOR EXACTA -->
         <div class="top-bar">
             <div class="top-brand">AQ-SPEC 1500</div>
-            <div class="top-status">System Status: Nominal</div>
+            <div class="top-status-container">
+                <div class="top-status">System Status: Nominal</div>
+            </div>
             <div class="top-icons">
-                <span>📁</span>
-                <span>🔊</span>
-                <span>🔋</span>
+                <!-- Icono Gráfico -->
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v7H7zm4-3h2v10h-2zm4 6h2v4h-2z"/></svg>
+                <!-- Icono Altavoz -->
+                <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                <!-- Icono Batería -->
+                <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4zM11 20v-5.5H9L13 7v5.5h2L11 20z"/></svg>
             </div>
         </div>
 
@@ -280,67 +307,139 @@
         <div class="main-layout">
             
             <!-- PANEL IZQUIERDO -->
-            <div class="left-panel">
-                <button class="ui-btn active" title="Signal Analyzer">
-                    <svg viewBox="0 0 24 24"><path d="M3 3h2v18H3V3zm4 6h2v6H7V9zm4-4h2v14h-2V5zm4 2h2v10h-2V7zm4 4h2v6h-2v-6z"/></svg>
-                    <span>Signal Analyzer</span>
+            <div class="side-panel left-panel">
+                <button class="ui-btn active">
+                    <div class="icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm2 2v14h14V5H5zm2 8l4-4 4 4 4-4v6H7v-2z"/></svg>
+                    </div>
+                    <span>Signal<br>Analyzer</span>
                 </button>
-                <button class="ui-btn" title="Leak Finder">
-                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <span>Leak Finder</span>
+                <button class="ui-btn">
+                    <div class="icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm-1 2h2v-2h-2v2zm0-4h2V7h-2v5z"/></svg>
+                    </div>
+                    <span>Leak<br>Finder</span>
                 </button>
             </div>
 
-            <!-- VISOR DE ESPECTROGRAMA HORIZONTAL -->
+            <!-- VISOR DE ESPECTROGRAMA -->
             <div class="spectrogram-container">
                 <canvas id="specCanvas"></canvas>
+                <div class="color-scale"></div>
             </div>
 
             <!-- PANEL DERECHO -->
-            <div class="right-panel">
-                <button class="ui-btn" title="Data Log">
-                    <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+            <div class="side-panel right-panel">
+                <button class="ui-btn no-box">
+                    <div class="icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10zM12 15l-3-3h2v-4h2v4h2l-3 3z"/></svg>
+                    </div>
                     <span>Data Log</span>
                 </button>
-                <button class="ui-btn" title="Settings">
-                    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c-.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                <button class="ui-btn no-box">
+                    <div class="icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                    </div>
                     <span>Settings</span>
                 </button>
-                <button class="ui-btn" title="Home">
-                    <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                <button class="ui-btn no-box">
+                    <div class="icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                    </div>
                     <span>Home</span>
                 </button>
             </div>
 
-            <!-- SECCIÓN INFERIOR: TUBERÍA Y VALORES -->
+            <!-- SECCIÓN INFERIOR: TUBERÍA EXACTA Y VALORES -->
             <div class="pipe-container">
-                <div class="sensor-node-label">sensor node</div>
-
+                
                 <div class="pipe-graphic-area">
-                    <div class="pipe-drawing">
-                        <div class="pipe-valve">
-                            <div class="node-dot"></div>
+                    <!-- SVG para replicar exactamente la forma de la tubería 3D -->
+                    <div class="pipe-svg-wrapper">
+                        <!-- Etiqueta Sensor Node con pequeña flecha -->
+                        <div style="position: absolute; top: -5px; left: 50%; transform: translateX(-50%); text-align: center;">
+                            <span style="font-size: 0.7rem; color: #d0e5f2;">sensor node</span>
+                            <svg width="20" height="20" style="display: block; margin: -2px auto 0 auto;">
+                                <path d="M 10 2 Q 15 2 15 12" fill="none" stroke="#00e5ff" stroke-width="1.5" />
+                                <polygon points="12,9 15,14 18,9" fill="#00e5ff" />
+                            </svg>
                         </div>
+                        
+                        <svg width="100%" height="100%" viewBox="0 0 450 100" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="pipeGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#9baab5"/>
+                                    <stop offset="25%" stop-color="#dce5ec"/>
+                                    <stop offset="50%" stop-color="#677c8b"/>
+                                    <stop offset="85%" stop-color="#2c3a44"/>
+                                    <stop offset="100%" stop-color="#11181d"/>
+                                </linearGradient>
+                                <linearGradient id="flangeGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#a0b5c5"/>
+                                    <stop offset="50%" stop-color="#4d6271"/>
+                                    <stop offset="100%" stop-color="#151e25"/>
+                                </linearGradient>
+                                <filter id="glow">
+                                    <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                                    <feMerge>
+                                        <feMergeNode in="coloredBlur"/>
+                                        <feMergeNode in="SourceGraphic"/>
+                                    </feMerge>
+                                </filter>
+                            </defs>
+                            
+                            <!-- Tubo Izquierdo Inferior -->
+                            <rect x="0" y="70" width="100" height="22" fill="url(#pipeGrad)" />
+                            <!-- Brida 1 -->
+                            <rect x="94" y="65" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
+                            
+                            <!-- Curva S Izquierda -->
+                            <path d="M 104 81 C 135 81, 135 41, 166 41" fill="none" stroke="url(#pipeGrad)" stroke-width="22" />
+                            
+                            <!-- Brida 2 -->
+                            <rect x="156" y="25" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
+                            
+                            <!-- Tubo Central -->
+                            <rect x="166" y="30" width="118" height="22" fill="url(#pipeGrad)" />
+                            
+                            <!-- Brida 3 -->
+                            <rect x="284" y="25" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
+                            
+                            <!-- Curva S Derecha -->
+                            <path d="M 294 41 C 325 41, 325 81, 356 81" fill="none" stroke="url(#pipeGrad)" stroke-width="22" />
+                            
+                            <!-- Brida 4 -->
+                            <rect x="346" y="65" width="10" height="32" fill="url(#flangeGrad)" rx="2" />
+                            
+                            <!-- Tubo Derecho Inferior -->
+                            <rect x="356" y="70" width="94" height="22" fill="url(#pipeGrad)" />
+
+                            <!-- Válvula / Nodo Central -->
+                            <circle cx="225" cy="41" r="16" fill="#2b3a45" stroke="#7a8c98" stroke-width="2"/>
+                            <circle cx="225" cy="41" r="6" fill="#00ffff" />
+                            <circle cx="225" cy="41" r="6" fill="none" stroke="#00ffff" stroke-width="2" filter="url(#glow)"/>
+                        </svg>
                     </div>
+                    
+                    <!-- Textos de Amplitud -->
                     <div class="amplitude-display">
                         LEAK SIGNATURE AMPLITUDE:
                         <span class="value" id="ampVal">785</span>
                     </div>
                 </div>
 
+                <!-- Slider Inferior -->
                 <div class="frequency-slider-wrapper">
-                    <div class="slider-labels">
-                        <span>0 Hz</span>
-                        <span>8000 Hz</span>
-                    </div>
+                    <span>0 Hz</span>
                     <input type="range" class="range-slider" min="0" max="8000" value="4000">
+                    <span>8000 Hz</span>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- SCRIPT DE ANIMACIÓN DEL ESPECTROGRAMA EN TIEMPO REAL -->
+    <!-- SCRIPT DE SIMULACIÓN EXACTA DEL ESPECTROGRAMA -->
     <script>
         const canvas = document.getElementById('specCanvas');
         const ctx = canvas.getContext('2d', { alpha: false });
@@ -349,38 +448,58 @@
         function resizeCanvas() {
             canvas.width = canvas.parentElement.clientWidth;
             canvas.height = canvas.parentElement.clientHeight;
-            ctx.fillStyle = "#000";
+            ctx.fillStyle = "#000411";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
+        let timeOffset = 0;
+
         function renderSpectrogram() {
-            // Desplazar la imagen un píxel a la izquierda para crear la cascada horizontal
+            // Desplazar imagen un píxel a la izquierda
             const imgData = ctx.getImageData(1, 0, canvas.width - 1, canvas.height);
             ctx.putImageData(imgData, 0, 0);
 
             const x = canvas.width - 1;
-            for (let y = 0; y < canvas.height; y++) {
-                let intensity = Math.random() * 25; // Ruido base oscuro
+            timeOffset += 0.1;
 
-                // Simular picos de bandas acústicas de fugas (similares a la foto de referencia)
+            for (let y = 0; y < canvas.height; y++) {
+                let intensity = Math.random() * 20; // Ruido base muy oscuro
                 let normY = y / canvas.height;
-                if ((normY > 0.2 && normY < 0.8 && Math.random() > 0.82) || 
-                    (normY > 0.4 && normY < 0.6 && Math.random() > 0.7)) {
+
+                // Generar los picos característicos de la imagen
+                if (Math.random() > 0.95) {
+                    // Pico estrecho brillante aleatorio
                     intensity = Math.random() * 255;
+                } else if (normY > 0.25 && normY < 0.75) {
+                    // Banda central con picos anchos
+                    let wave = Math.sin(timeOffset + normY * 10) * Math.cos(timeOffset * 0.5);
+                    if (wave > 0.7) {
+                        intensity = (wave - 0.7) * 850 + Math.random() * 50;
+                    } else if (Math.random() > 0.88) {
+                        intensity = Math.random() * 150;
+                    }
                 }
 
-                // Paleta de colores exacta: Azul oscuro -> Verde militar -> Amarillo brillante -> Blanco
-                let r = intensity > 180 ? 255 : (intensity > 90 ? intensity * 1.1 : 0);
-                let g = intensity > 60 ? intensity : intensity * 0.5;
-                let b = intensity < 150 ? 200 - intensity : 0;
+                // Aplicar paleta exacta: Oscuro -> Cyan -> Verde -> Amarillo
+                let r = intensity > 170 ? 255 : (intensity > 100 ? (intensity-100)*3.5 : 0);
+                let g = intensity > 60 ? intensity * 1.2 : intensity * 0.4;
+                let b = intensity < 160 ? 180 - intensity : 0;
 
-                ctx.fillStyle = `rgb(${Math.min(r, 255)}, ${Math.min(g, 255)}, ${Math.min(b, 255)})`;
+                // Evitar desbordamientos
+                r = Math.min(255, Math.max(0, r));
+                g = Math.min(255, Math.max(0, g));
+                b = Math.min(255, Math.max(0, b));
+
+                // Fondo base azul muy oscuro
+                if(intensity < 25) { r = 0; g = 5; b = 30 + intensity; }
+
+                ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
                 ctx.fillRect(x, y, 1, 1);
             }
 
-            // Variación realista del número de amplitud
+            // Variación realista de amplitud
             let currentAmp = Math.floor(775 + Math.random() * 20);
             ampVal.innerText = currentAmp;
         }
