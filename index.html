@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AurumTrap AI - Control Fitosanitario Dinámico</title>
+    <title>AurumTrap AI - Control de Insectos Plaga</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        /* Tipografía escalada un 20% en toda la interfaz */
-        html { font-size: 19.2px; }
+        html { font-size: 19.2px; } /* Escalado tipográfico +20% */
         body { font-family: 'Inter', sans-serif; background-color: #f1f3f4; color: #1e293b; overflow-x: hidden; }
         
         .card-shadow { box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04); }
-        
-        /* Sombra limpia de contorno (sin oscurecer el fondo) */
         .contour-modal-shadow {
             box-shadow: 0 25px 70px -10px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.08);
         }
@@ -42,15 +39,9 @@
             border-radius: 6px;
         }
 
-        /* Botón de frutal activo */
-        .fruit-btn-active {
-            border-color: #a3e635 !important;
-            background-color: #eaffec !important;
-            color: #14532d !important;
-            font-weight: 800 !important;
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(163, 230, 53, 0.25);
-        }
+        .badge-danger-extremo { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+        .badge-danger-cuarentena { background-color: #ffedd5; color: #9a3412; border: 1px solid #fb923c; }
+        .badge-danger-alto { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
     </style>
 </head>
 <body class="flex w-screen h-screen p-4 gap-6 select-none">
@@ -88,17 +79,17 @@
     <!-- ================= CONTENIDO PRINCIPAL ================= -->
     <main class="flex-1 h-full overflow-y-auto pr-2 flex flex-col gap-6">
         
-        <!-- HEADER EDITABLE -->
+        <!-- HEADER EDITABLE CON GPS Y ESTADO -->
         <header class="flex flex-wrap justify-between items-center pt-2">
             <div>
                 <div class="flex items-center gap-2">
-                    <h1 id="admin-field-name" contenteditable="true" title="Clic para editar" class="text-3xl font-black tracking-tight text-gray-900 cursor-pointer">Huerto Frutícola - Cuartel Central</h1>
+                    <h1 id="admin-field-name" contenteditable="true" title="Clic para editar el predio" class="text-3xl font-black tracking-tight text-gray-900 cursor-pointer">Cuartel San Pedro - Lote Central</h1>
                     <span class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded font-mono font-bold">✏️ Administrador</span>
                 </div>
                 <div class="flex items-center gap-4 text-xs font-semibold text-gray-500 mt-1">
                     <span class="flex items-center gap-1.5">
                         <span class="text-base">📍</span> 
-                        GPS: <span id="admin-field-gps" contenteditable="true" class="text-gray-800 font-mono">-34.1708° S, -70.7444° W (Rancagua / San Fernando)</span>
+                        GPS: <span id="admin-field-gps" contenteditable="true" class="text-gray-800 font-mono">-34.1820° S, -70.7180° W</span>
                     </span>
                     <span class="text-gray-300">•</span>
                     <button id="toggle-online-btn" onclick="toggleOnlineState()" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold transition-colors">
@@ -110,10 +101,10 @@
 
             <div class="flex items-center gap-4">
                 <button onclick="simularInferencia()" class="bg-gray-900 text-white hover:bg-gray-800 font-bold px-6 py-3 rounded-2xl shadow-sm flex items-center gap-2 text-sm active:scale-95 transition-transform">
-                    <span>⚡</span> Captura Inmediata
+                    <span>⚡</span> Inferencia Inmediata
                 </button>
                 <div class="bg-white px-5 py-3 rounded-2xl card-shadow flex items-center gap-3 border border-gray-100">
-                    <span class="font-bold text-sm" id="nodo-badge">Trampa Cerezo #01</span>
+                    <span class="font-bold text-sm" id="nodo-badge">Trampa IA #01</span>
                     <span class="w-2.5 h-2.5 rounded-full bg-[#a3e635]"></span>
                 </div>
             </div>
@@ -122,61 +113,90 @@
         <!-- GRID PRINCIPAL DE 3 COLUMNAS -->
         <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 pb-8">
             
-            <!-- ====== COLUMNA 1: SELECTOR DE ÁRBOL FRUTAL ====== -->
+            <!-- ====== COLUMNA 1: SUBMENÚ FRUTAL + ÚLTIMA CAPTURA PREDOMINANTE ====== -->
             <div class="xl:col-span-4 flex flex-col gap-6">
-                <!-- PANEL: Selector de Especie Frutal -->
+                
+                <!-- 1. SUBMENÚ PLEGABLE: Selección de Árbol Frutal -->
+                <div class="relative">
+                    <div onclick="toggleSubmenuFrutal(event)" class="bg-white rounded-[2rem] p-5 card-shadow border border-gray-100 flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-colors">
+                        <div class="flex items-center gap-3.5">
+                            <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl" id="frutal-icono-current">🍒</div>
+                            <div>
+                                <span class="text-[11px] font-extrabold uppercase tracking-wider text-gray-400 block">Cultivo Monitoreado</span>
+                                <h3 class="font-black text-lg text-gray-900 leading-tight" id="frutal-nombre-current">Cerezo (Prunus avium)</h3>
+                            </div>
+                        </div>
+                        <div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-bold">▼</div>
+                    </div>
+
+                    <!-- Dropdown Flotante Plegable -->
+                    <div id="dropdown-frutales" class="hidden absolute top-full left-0 right-0 mt-2 z-30 bg-white rounded-3xl p-3 contour-modal-shadow border border-gray-100 grid grid-cols-2 gap-2">
+                        <button onclick="seleccionarFrutal('cerezo')" class="p-3 rounded-xl hover:bg-green-50 text-left text-xs font-bold flex items-center gap-2"><span>🍒</span> Cerezo</button>
+                        <button onclick="seleccionarFrutal('durazno')" class="p-3 rounded-xl hover:bg-green-50 text-left text-xs font-bold flex items-center gap-2"><span>🍑</span> Durazno</button>
+                        <button onclick="seleccionarFrutal('ciruelo')" class="p-3 rounded-xl hover:bg-green-50 text-left text-xs font-bold flex items-center gap-2"><span>🫐</span> Ciruelo</button>
+                        <button onclick="seleccionarFrutal('kiwi')" class="p-3 rounded-xl hover:bg-green-50 text-left text-xs font-bold flex items-center gap-2"><span>🥝</span> Kiwi</button>
+                        <button onclick="seleccionarFrutal('parra')" class="p-3 rounded-xl hover:bg-green-50 text-left text-xs font-bold flex items-center gap-2"><span>🍇</span> Parra (Vid)</button>
+                        <button onclick="seleccionarFrutal('nogal')" class="p-3 rounded-xl hover:bg-green-50 text-left text-xs font-bold flex items-center gap-2"><span>🌰</span> Nogal</button>
+                        <button onclick="seleccionarFrutal('almendro')" class="col-span-2 p-3 rounded-xl hover:bg-green-50 text-center text-xs font-bold flex items-center justify-center gap-2"><span>🥜</span> Almendro</button>
+                    </div>
+                </div>
+
+                <!-- 2. RECUADRO DE ÚLTIMA CAPTURA PREDOMINANTE (REEMPLAZA EL ESPACIO VACÍO) -->
                 <div class="bg-white rounded-[2rem] p-6 card-shadow border border-gray-100 flex-1 flex flex-col justify-between">
                     <div>
-                        <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-black text-xl text-gray-900">Especie Frutal</h3>
-                            <span class="text-xs bg-[#eaffec] text-green-800 font-extrabold px-3 py-1 rounded-full">Chile Centro-Sur</span>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-extrabold text-base text-gray-900 flex items-center gap-2">
+                                Última Detección Predominante
+                                <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
+                            </h3>
+                            <span class="text-xs font-bold text-gray-400 font-mono">ESP32-CAM Macro</span>
                         </div>
-                        <p class="text-xs font-semibold text-gray-500 mb-4">Selecciona el cultivo para cargar su perfil de plagas claves:</p>
 
-                        <!-- Botones de Selección Rápida -->
-                        <div class="grid grid-cols-2 gap-2.5" id="fruit-buttons-container">
-                            <button onclick="seleccionarFrutal('cerezo')" id="btn-cerezo" class="fruit-btn fruit-btn-active p-3.5 rounded-2xl border border-gray-200 text-left text-xs font-bold transition-all flex items-center gap-2.5">
-                                <span class="text-2xl">🍒</span> Cerezo (Carozo)
-                            </button>
-                            <button onclick="seleccionarFrutal('durazno')" id="btn-durazno" class="fruit-btn p-3.5 rounded-2xl border border-gray-200 text-left text-xs font-bold transition-all flex items-center gap-2.5 hover:bg-gray-50">
-                                <span class="text-2xl">🍑</span> Durazno / Nectarín
-                            </button>
-                            <button onclick="seleccionarFrutal('ciruelo')" id="btn-ciruelo" class="fruit-btn p-3.5 rounded-2xl border border-gray-200 text-left text-xs font-bold transition-all flex items-center gap-2.5 hover:bg-gray-50">
-                                <span class="text-2xl">🫐</span> Ciruelo Europeo/Jap.
-                            </button>
-                            <button onclick="seleccionarFrutal('kiwi')" id="btn-kiwi" class="fruit-btn p-3.5 rounded-2xl border border-gray-200 text-left text-xs font-bold transition-all flex items-center gap-2.5 hover:bg-gray-50">
-                                <span class="text-2xl">🥝</span> Kiwi (Hayward/Amarillo)
-                            </button>
-                            <button onclick="seleccionarFrutal('parra')" id="btn-parra" class="fruit-btn p-3.5 rounded-2xl border border-gray-200 text-left text-xs font-bold transition-all flex items-center gap-2.5 hover:bg-gray-50">
-                                <span class="text-2xl">🍇</span> Parra / Vid (Mesa/Vino)
-                            </button>
-                            <button onclick="seleccionarFrutal('nogal')" id="btn-nogal" class="fruit-btn p-3.5 rounded-2xl border border-gray-200 text-left text-xs font-bold transition-all flex items-center gap-2.5 hover:bg-gray-50">
-                                <span class="text-2xl">🌰</span> Nogal (Chandler/Serr)
-                            </button>
-                            <button onclick="seleccionarFrutal('almendro')" id="btn-almendro" class="fruit-btn col-span-2 p-3.5 rounded-2xl border border-gray-200 text-left text-xs font-bold transition-all flex items-center justify-center gap-2.5 hover:bg-gray-50">
-                                <span class="text-2xl">🥜</span> Almendro (Nonpareil/Carmel)
-                            </button>
+                        <!-- Foto de la Captura Real -->
+                        <div class="w-full h-56 bg-gray-950 rounded-2xl overflow-hidden relative shadow-inner group">
+                            <img id="img-predominante" src="https://images.unsplash.com/photo-1590845947376-2638caa89309?q=80&w=800&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Insecto">
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                                <div class="border-2 border-red-500 bg-red-500/20 w-36 h-36 rounded-xl flex items-start p-1.5 shadow-lg">
+                                    <span class="bg-red-500 text-white text-[11px] font-black px-1.5 py-0.5 rounded shadow" id="box-predominante-tag">D. suzukii 96%</span>
+                                </div>
+                            </div>
+                            <div class="absolute bottom-2 left-2 bg-black/70 backdrop-blur text-white text-[10px] font-mono px-2 py-0.5 rounded">
+                                Lente Macro: 6.5 cm
+                            </div>
+                        </div>
+
+                        <!-- Ficha Técnica de la Plaga Identificada por el Motor TinyML -->
+                        <div class="mt-4 space-y-2">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-black text-lg text-gray-900 leading-none" id="nombre-comun-predominante">Mosca de Alas Manchadas</h4>
+                                    <p class="text-xs text-gray-500 italic font-medium mt-0.5" id="nombre-cientifico-predominante">Drosophila suzukii</p>
+                                </div>
+                                <span class="badge-danger-extremo px-3 py-1 rounded-full text-xs font-black" id="badge-peligro">Peligro Extremo</span>
+                            </div>
+                            
+                            <p class="text-xs text-gray-600 leading-relaxed pt-1" id="desc-impacto-predominante">
+                                Ovipone en fruta sana en proceso de maduración. El modelo TinyML confirma identificación por manchas en alas apicales.
+                            </p>
                         </div>
                     </div>
 
-                    <!-- Ficha Resumen del Huerto -->
-                    <div class="mt-5 p-4 rounded-2xl bg-gray-50 border border-gray-100">
-                        <span class="text-[11px] font-extrabold uppercase tracking-wider text-gray-400 block mb-1">Estado Fitosanitario del Cultivo</span>
-                        <h4 class="font-extrabold text-sm text-gray-800" id="cultivo-resumen-titulo">Cerezo: Alta Vulnerabilidad a D. suzukii</h4>
-                        <p class="text-xs text-gray-600 mt-1 leading-relaxed" id="cultivo-resumen-desc">Plaga crítica de fruto en maduración. Monitoreo constante con trampas de feromonas y alimenticias.</p>
+                    <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-xs font-bold text-gray-400">
+                        <span>Confianza IA: <strong class="text-green-700" id="ia-confianza-score">96.4%</strong></span>
+                        <span id="ia-hora-captura">Hoy, 16:42</span>
                     </div>
                 </div>
 
                 <!-- Tarjeta Relé / Cierre Automático -->
-                <div class="bg-white rounded-[2rem] p-6 card-shadow border border-gray-100 flex items-center justify-between">
+                <div class="bg-white rounded-[2rem] p-5 card-shadow border border-gray-100 flex items-center justify-between">
                     <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-[#eaffec] rounded-2xl flex items-center justify-center text-green-700 text-xl font-bold">⚡</div>
+                        <div class="w-11 h-11 bg-[#eaffec] rounded-2xl flex items-center justify-center text-green-700 text-xl font-bold">⚡</div>
                         <div>
-                            <h4 class="font-bold text-base">Relé / Trampa Mecánica</h4>
-                            <p class="text-xs text-gray-400">Activación por IA en Borde</p>
+                            <h4 class="font-bold text-sm text-gray-900">Actuador Mecánico Trampa</h4>
+                            <p class="text-[11px] text-gray-400">Accionado ante detección &gt;85%</p>
                         </div>
                     </div>
-                    <span class="bg-[#fff3e0] text-orange-600 font-bold text-xs px-3.5 py-1.5 rounded-full">Activo</span>
+                    <span class="bg-[#fff3e0] text-orange-600 font-bold text-xs px-3 py-1 rounded-full">Automático</span>
                 </div>
             </div>
 
@@ -198,27 +218,26 @@
                     <div class="grid grid-cols-7 gap-y-2 text-center text-sm font-semibold text-gray-700" id="calendar-grid"></div>
                 </div>
 
-                <!-- Gráfico Donut de Predominancia (Actualizado por Frutal) -->
+                <!-- Gráfico Donut de Predominancia -->
                 <div class="bg-white rounded-[2rem] p-6 card-shadow border border-gray-100 flex-1 flex flex-col relative min-h-[380px]">
                     <div class="flex justify-between items-center mb-1">
-                        <h3 class="font-bold text-lg">Predominancia de Plagas</h3>
+                        <h3 class="font-bold text-lg">Población de Insectos</h3>
                         <span class="text-xl">📊</span>
                     </div>
                     
                     <div class="relative flex-1 w-full mt-2">
                         <canvas id="donutChart"></canvas>
                         <div class="chart-center-text">
-                            <span class="block text-2xl md:text-3xl font-black text-gray-900 leading-none tracking-tight uppercase" id="donut-center-name">D. SUZUKII</span>
-                            <span class="block text-xs font-bold uppercase tracking-widest mt-2 text-gray-400" id="donut-center-pct">Plaga Principal: 52%</span>
+                            <span class="block text-2xl font-black text-gray-900 leading-none tracking-tight uppercase" id="donut-center-name">D. SUZUKII</span>
+                            <span class="block text-xs font-bold uppercase tracking-widest mt-2 text-gray-400" id="donut-center-pct">52% de Capturas</span>
                         </div>
                     </div>
 
-                    <!-- Leyendas Dinámicas -->
                     <div class="grid grid-cols-2 gap-2.5 mt-4 pt-3 border-t border-gray-100 text-xs font-bold" id="donut-legends-container"></div>
                 </div>
             </div>
 
-            <!-- ====== COLUMNA 3: SENSORES + BARRAS + TRATAMIENTOS ====== -->
+            <!-- ====== COLUMNA 3: SENSORES + BARRAS + MÓDULO INTERACTIVO DEL ENCARGADO ====== -->
             <div class="xl:col-span-4 flex flex-col gap-6">
                 <!-- Sensores de Red y Clima -->
                 <div class="grid grid-cols-2 gap-4">
@@ -230,7 +249,6 @@
                         <div class="space-y-1 text-xs font-semibold">
                             <div class="flex items-baseline gap-2"><span class="text-3xl font-extrabold text-green-600">8</span><span class="text-gray-400">Online</span></div>
                             <div class="flex items-baseline gap-2"><span class="text-xl font-bold text-amber-500">2</span><span class="text-gray-400">Bat. Baja</span></div>
-                            <div class="flex items-baseline gap-2"><span class="text-xl font-bold text-gray-400">0</span><span class="text-gray-400">Offline</span></div>
                         </div>
                     </div>
 
@@ -241,20 +259,19 @@
                         </div>
                         <div class="text-4xl font-extrabold text-green-950 tracking-tight">24<span class="text-2xl font-light">°C</span></div>
                         <div class="text-xs font-bold text-green-800 space-y-0.5 mt-2">
-                            <div>💨 16 km/h</div>
                             <div>💧 Humedad 44%</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Barras Verticales Dinámicas -->
+                <!-- Barras Verticales de Captura -->
                 <div class="bg-white rounded-[2rem] p-6 card-shadow border border-gray-100 flex flex-col">
                     <div class="flex justify-between items-start mb-3">
                         <div>
                             <h3 class="font-bold text-base mb-1">Capturas Diarias</h3>
                             <div class="flex items-baseline gap-1">
                                 <span class="text-3xl font-extrabold text-gray-900" id="total-capturas-diarias">142</span>
-                                <span class="text-xs text-gray-400 font-semibold">individuos / 24h</span>
+                                <span class="text-xs text-gray-400 font-semibold">insectos / 24h</span>
                             </div>
                         </div>
                         <span class="text-2xl">🪰</span>
@@ -264,17 +281,47 @@
                     </div>
                 </div>
 
-                <!-- Tratamientos Fitosanitarios Recomendados -->
-                <div class="bg-white rounded-[2rem] p-6 card-shadow border border-gray-100 flex-1">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-extrabold text-lg">Manejo Integrado (MIP)</h3>
-                        <span class="text-xs font-bold text-gray-400 uppercase">Específico</span>
+                <!-- MÓDULO INTERACTIVO DEL ENCARGADO DE CAMPO (SUBIR REPORTES + FOTO + DIAGNÓSTICO IA) -->
+                <div class="bg-white rounded-[2rem] p-6 card-shadow border border-gray-100 flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-extrabold text-lg text-gray-900">Manejo de Campo (MIP)</h3>
+                            <span class="text-[11px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">Encargado</span>
+                        </div>
+                        
+                        <!-- Formulario Rápido del Operador de Campo -->
+                        <div class="space-y-3">
+                            <div class="flex gap-2">
+                                <!-- Botón Subir Foto de Daño -->
+                                <label class="flex-1 bg-gray-50 border border-dashed border-gray-300 rounded-xl p-2.5 text-center cursor-pointer hover:bg-gray-100 transition-colors flex items-center justify-center gap-2 text-xs font-bold text-gray-600">
+                                    <span>📷</span> <span id="label-foto">Subir Foto Afectación</span>
+                                    <input type="file" accept="image/*" class="hidden" onchange="procesarFotoCampo(event)">
+                                </label>
+                                <!-- Registro Rápido -->
+                                <button onclick="guardarReporteCampo()" class="bg-[#a3e635] text-green-950 font-black px-4 py-2.5 rounded-xl text-xs hover:bg-[#86efac] transition-all">
+                                    Registrar
+                                </button>
+                            </div>
+                            <input type="text" id="input-observacion" placeholder="Ej: Manchas en cerezas Sector Sur..." class="w-full bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-semibold outline-none focus:border-green-400">
+                        </div>
+
+                        <!-- Diagnóstico y Tratamiento Sugerido por el Motor de IA -->
+                        <div class="mt-4 p-4 rounded-2xl bg-[#eaffec] border border-green-200/60">
+                            <div class="flex items-center gap-2 text-green-900 font-extrabold text-xs mb-1">
+                                <span>🤖</span> Tratamiento Sugerido por IA:
+                            </div>
+                            <h4 class="font-black text-sm text-green-950" id="ia-tratamiento-titulo">Cebo Spinosad + Trampas Alimenticias</h4>
+                            <p class="text-xs text-green-900/80 mt-1 leading-relaxed" id="ia-tratamiento-desc">
+                                Aplicación perimetral para evitar penetración al huerto sin dejar residuos químicos en precosecha.
+                            </p>
+                        </div>
                     </div>
 
-                    <div class="space-y-3" id="tratamientos-container">
-                        <!-- Generado dinámicamente por JS según el frutal -->
+                    <div class="mt-3 text-[11px] text-gray-400 font-medium text-right">
+                        Validado según protocolos SAG Chile
                     </div>
                 </div>
+
             </div>
 
         </div>
@@ -287,27 +334,25 @@
             <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
                 <div>
                     <h3 class="text-2xl font-black text-gray-900" id="cal-modal-fecha">18 de Septiembre, 2026</h3>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Capturas Validadas por Inteligencia Artificial</p>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Informe de Trampa Validado por IA</p>
                 </div>
                 <button onclick="cerrarCalendarioModal()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold flex items-center justify-center text-xl transition-colors">&times;</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                 <div class="w-full h-80 bg-gray-950 rounded-3xl overflow-hidden relative shadow-inner">
-                    <img id="cal-modal-img" src="" class="w-full h-full object-cover" alt="Plaga">
+                    <img id="cal-modal-img" src="" class="w-full h-full object-cover" alt="Insecto">
                     <div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl text-xs font-extrabold text-gray-900 shadow">
-                        OV2640 Macro • ESP32 TinyML
+                        OV2640 Macro • ESP32 Inferencia
                     </div>
                 </div>
 
                 <div class="flex flex-col justify-between h-full space-y-4">
-                    <div class="space-y-3" id="cal-modal-plagas-lista">
-                        <!-- Datos dinámicos del día -->
-                    </div>
+                    <div class="space-y-3" id="cal-modal-plagas-lista"></div>
 
                     <div class="pt-2">
                         <button onclick="cerrarCalendarioModal()" class="w-full bg-gray-900 text-white hover:bg-gray-800 font-bold py-3.5 rounded-2xl transition-colors shadow">
-                            Cerrar Detalle (O clic fuera)
+                            Cerrar Ventana (O haz clic fuera)
                         </button>
                     </div>
                 </div>
@@ -318,12 +363,12 @@
 
     <!-- ================= MODALES DE LA BARRA LATERAL ================= -->
     <div id="center-modals-wrapper" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
-        <!-- Modal: Historial Central -->
+        <!-- Historial -->
         <div id="modal-historial" class="center-modal pointer-events-auto hidden opacity-0 scale-95 bg-white rounded-[2.5rem] p-8 w-[800px] max-w-[95vw] contour-modal-shadow">
             <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
                 <div>
                     <h3 class="text-2xl font-black text-gray-900">Historial de Poblaciones</h3>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Dinámica Temporal de Plagas</p>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Capturas Acumuladas</p>
                 </div>
                 <button onclick="closeAllCenterModals()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold flex items-center justify-center text-xl">&times;</button>
             </div>
@@ -347,7 +392,7 @@
             </div>
         </div>
 
-        <!-- Modal: Usuarios Central -->
+        <!-- Usuarios -->
         <div id="modal-usuarios" class="center-modal pointer-events-auto hidden opacity-0 scale-95 bg-white rounded-[2.5rem] p-8 w-[800px] max-w-[95vw] contour-modal-shadow">
             <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
                 <div>
@@ -368,28 +413,20 @@
                 <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
                     <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl">📱</div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-base text-gray-900">Sesiones Web Activas</h4>
-                        <p class="text-xs text-gray-500">2 operadores monitoreando en red local</p>
+                        <h4 class="font-bold text-base text-gray-900">Encargado de Campo</h4>
+                        <p class="text-xs text-gray-500">App Móvil Conectada</p>
                     </div>
                     <span class="w-3 h-3 rounded-full bg-green-500"></span>
-                </div>
-                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl text-blue-600">🔔</div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-base text-gray-900">Canales de Alerta Crítica</h4>
-                        <p class="text-xs text-gray-500">Bot Telegram Fitosanitario, Sirena de Cuartel</p>
-                    </div>
-                    <span class="text-xs font-bold text-blue-700">Conectado</span>
                 </div>
             </div>
         </div>
 
-        <!-- Modal: Configuración Central -->
+        <!-- Configuración -->
         <div id="modal-config" class="center-modal pointer-events-auto hidden opacity-0 scale-95 bg-white rounded-[2.5rem] p-8 w-[800px] max-w-[95vw] contour-modal-shadow">
             <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
                 <div>
                     <h3 class="text-2xl font-black text-gray-900">Ajustes de Plataforma</h3>
-                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Preferencias del Sistema</p>
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">Preferencias</p>
                 </div>
                 <button onclick="closeAllCenterModals()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold flex items-center justify-center text-xl">&times;</button>
             </div>
@@ -402,129 +439,178 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Umbral de Alerta Inmediata</label>
-                    <input type="number" value="85" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-800" placeholder="% confianza">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-400 mb-2">Umbral Mínimo TinyML</label>
+                    <input type="number" value="85" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 font-bold text-sm text-gray-800">
                 </div>
             </div>
         </div>
     </div>
 
 
-    <!-- ================= BASE DE DATOS FITOSANITARIA Y LOGICA ================= -->
+    <!-- ================= BASE DE DATOS DE INSECTOS PLAGA REALES ================= -->
     <script>
-        // BASE DE DATOS DINÁMICA POR FRUTAL
-        const DATA_FRUTALES = {
+        // BASE DE DATOS: SOLO INSECTOS VISIBLES/CAPTURABLES (NO ESCAMAS, NO BACTERIAS)
+        const BASE_INSECTOS = {
             cerezo: {
+                icono: "🍒",
+                nombreCultivo: "Cerezo (Prunus avium)",
                 nombreBadge: "Trampa Cerezo #01",
-                resumenTitulo: "Cerezo: Alta Vulnerabilidad a D. suzukii",
-                resumenDesc: "Amenaza crítica en envero y cosecha. Riesgo de rechazo por Escama de San José y Chape foliar.",
-                plagas: ['D. suzukii', 'Escama San José', 'Chape Cerezo', 'Chanchito Blanco'],
-                porcentajes: [52, 24, 16, 8],
-                colores: ['#ef4444', '#f59e0b', '#10b981', '#cbd5e1'],
-                predominante: "D. SUZUKII",
+                predominante: {
+                    comun: "Mosca de Alas Manchadas",
+                    cientifico: "Drosophila suzukii",
+                    peligrosidad: "Peligro Extremo",
+                    peligroClase: "badge-danger-extremo",
+                    impacto: "Ataca fruto sano en envero. La hembra sierra la epidermis dejando huevos que pudren la cereza en 48 hrs.",
+                    foto: "https://images.unsplash.com/photo-1590845947376-2638caa89309?q=80&w=800&auto=format&fit=crop",
+                    boxTag: "D. suzukii 96.4%"
+                },
+                insectos: ['D. suzukii', 'Chape del Cerezo', 'Cabrito / Burrito', 'Pulgón Negro'],
+                porcentajes: [54, 24, 14, 8],
+                colores: ['#ef4444', '#10b981', '#8b5cf6', '#cbd5e1'],
                 capturasTotal: 142,
-                capturasPorEspecie: [74, 34, 23, 11],
-                tratamientos: [
-                    { icono: "🪰", titulo: "Trampeo Drosophila suzukii", subtitulo: "Monitoreo con vinagre de manzana / feromona", fecha: "Hoy, 09:00 AM", tag: "Crítico", tagColor: "bg-red-100 text-red-800" },
-                    { icono: "🧪", titulo: "Aplicación de Aceite Mineral", subtitulo: "Control asfixiante Escama de San José", fecha: "En 2 días", tag: "Fitosanitario", tagColor: "bg-amber-100 text-amber-800" },
-                    { icono: "🌿", titulo: "Inspección Follaje (Chape)", subtitulo: "Revisión de esqueletizado en hojas tiernas", fecha: "21 Sept", tag: "Preventivo", tagColor: "bg-emerald-100 text-emerald-800" }
-                ]
+                capturasEspecie: [76, 34, 20, 12],
+                tratamientoIA: {
+                    titulo: "Cebo Spinosad + Trampas Alimenticias",
+                    desc: "Aplicación perimetral en borduras para interceptar la entrada de hembras al cuartel sin dejar residuos."
+                }
             },
             durazno: {
-                nombreBadge: "Trampa Durazno #04",
-                resumenTitulo: "Durazno: Alerta Polilla Oriental (Grapholita)",
-                resumenDesc: "Barrenador de brotes tiernos en primavera y frutos en precosecha. Daño por trips en floración.",
-                plagas: ['Grapholita molesta', 'D. suzukii', 'Escama San José', 'Trips California'],
-                porcentajes: [48, 26, 16, 10],
+                icono: "🍑",
+                nombreCultivo: "Durazno / Nectarín",
+                nombreBadge: "Trampa Durazno #02",
+                predominante: {
+                    comun: "Polilla Oriental de la Fruta",
+                    cientifico: "Grapholita molesta",
+                    peligrosidad: "Peligro Alto",
+                    peligroClase: "badge-danger-alto",
+                    impacto: "Larvas barrenan los brotes tiernos en primavera y penetran el fruto cerca del pedúnculo antes de cosecha.",
+                    foto: "https://images.unsplash.com/photo-1544321568-d064e6259e86?q=80&w=800&auto=format&fit=crop",
+                    boxTag: "Grapholita 94.1%"
+                },
+                insectos: ['Grapholita molesta', 'D. suzukii', 'Trips California', 'Burrito del Frutal'],
+                porcentajes: [50, 26, 14, 10],
                 colores: ['#f97316', '#ef4444', '#f59e0b', '#cbd5e1'],
-                predominante: "GRAPHOLITA",
                 capturasTotal: 165,
-                capturasPorEspecie: [80, 43, 26, 16],
-                tratamientos: [
-                    { icono: "🦋", titulo: "Emisores Confusión Sexual", subtitulo: "Dispensadores de feromona para Grapholita", fecha: "Hoy, 11:30 AM", tag: "Biológico", tagColor: "bg-emerald-100 text-emerald-800" },
-                    { icono: "🌸", titulo: "Control de Trips en Floración", subtitulo: "Monitoreo con trampas cromáticas azules", fecha: "Mañana", tag: "Alerta", tagColor: "bg-amber-100 text-amber-800" },
-                    { icono: "🪵", titulo: "Revisión Escolito de Frutales", subtitulo: "Búsqueda de orificios con goma en ramas", fecha: "24 Sept", tag: "Preventivo", tagColor: "bg-gray-100 text-gray-800" }
-                ]
+                capturasEspecie: [82, 43, 24, 16],
+                tratamientoIA: {
+                    titulo: "Confusión Sexual con Feromonas (Ropes)",
+                    desc: "Saturación del ambiente con feromona sintética para evitar el apareamiento de la primera generación primaveral."
+                }
             },
             ciruelo: {
-                nombreBadge: "Trampa Ciruelo #02",
-                resumenTitulo: "Ciruelo: Vigilancia de Barrenadores y Chape",
-                resumenDesc: "Ataque cruzado de Polilla Oriental y larvas desfoliadoras de Chape. Monitoreo de Burritos en suelo.",
-                plagas: ['Grapholita molesta', 'Chape del Ciruelo', 'Burrito de la Raíz', 'D. suzukii'],
-                porcentajes: [44, 28, 18, 10],
-                colores: ['#f97316', '#10b981', '#8b5cf6', '#ef4444'],
-                predominante: "GRAPHOLITA",
-                capturasTotal: 120,
-                capturasPorEspecie: [53, 34, 21, 12],
-                tratamientos: [
-                    { icono: "🪲", titulo: "Barreras Físicas en Tronco", subtitulo: "Bandas de pasta adhesiva contra Burritos", fecha: "Ayer, 16:00", tag: "Mecánico", tagColor: "bg-purple-100 text-purple-800" },
-                    { icono: "🐛", titulo: "Control Larval de Chape", subtitulo: "Inspección de hojas esqueletizadas", fecha: "En 3 días", tag: "Monitoreo", tagColor: "bg-emerald-100 text-emerald-800" },
-                    { icono: "🪰", titulo: "Curva de Vuelo D. suzukii", subtitulo: "Reemplazo de atrayente alimenticio", fecha: "22 Sept", tag: "Rutina", tagColor: "bg-gray-100 text-gray-800" }
-                ]
+                icono: "🫐",
+                nombreCultivo: "Ciruelo Europeo/Japonés",
+                nombreBadge: "Trampa Ciruelo #01",
+                predominante: {
+                    comun: "Chape del Cerezo y Ciruelo",
+                    cientifico: "Caliroa cerasi",
+                    peligrosidad: "Peligro Medio",
+                    peligroClase: "badge-danger-alto",
+                    impacto: "Larvas negras babosas raspan el tejido verde de las hojas dejándolas transparentes como un esqueleto.",
+                    foto: "https://images.unsplash.com/photo-1590845947376-2638caa89309?q=80&w=800&auto=format&fit=crop",
+                    boxTag: "Caliroa 92.8%"
+                },
+                insectos: ['Caliroa cerasi', 'Grapholita molesta', 'Burrito de la Raíz', 'D. suzukii'],
+                porcentajes: [45, 30, 15, 10],
+                colores: ['#10b981', '#f97316', '#8b5cf6', '#ef4444'],
+                capturasTotal: 118,
+                capturasEspecie: [53, 35, 18, 12],
+                tratamientoIA: {
+                    titulo: "Bacillus thuringiensis (Bt) en Follaje",
+                    desc: "Bioinsecticida estomacal altamente selectivo para larvas masticadoras sin afectar fauna benéfica."
+                }
             },
             kiwi: {
-                nombreBadge: "Trampa Kiwi #01",
-                resumenTitulo: "Kiwi: Cero Residuos Químicos y Alerta Psa",
-                resumenDesc: "Control biológico de Chanchito Blanco y Trips. Alta restricción de agroquímicos de exportación.",
-                plagas: ['Chanchito Blanco', 'Trips de Flores', 'Burrito de la Raíz', 'Polilla Enrolladora'],
-                porcentajes: [46, 28, 16, 10],
-                colores: ['#06b6d4', '#f59e0b', '#8b5cf6', '#cbd5e1'],
-                predominante: "CHANCHITO",
-                capturasTotal: 88,
-                capturasPorEspecie: [40, 25, 14, 9],
-                tratamientos: [
-                    { icono: "🐞", titulo: "Liberación Cryptolaemus", subtitulo: "Enemigo natural para Chanchito Blanco", fecha: "Hoy, 08:00 AM", tag: "Biológico", tagColor: "bg-emerald-100 text-emerald-800" },
-                    { icono: "🔬", titulo: "Desinfección de Herramientas", subtitulo: "Prevención Cancro Bacteriano (Psa)", fecha: "Continuo", tag: "Sanitario", tagColor: "bg-red-100 text-red-800" },
-                    { icono: "🪲", titulo: "Revisión Cuello de Raíz", subtitulo: "Búsqueda de larvas subterráneas de curculiónidos", fecha: "23 Sept", tag: "Muestreo", tagColor: "bg-gray-100 text-gray-800" }
-                ]
+                icono: "🥝",
+                nombreCultivo: "Kiwi (Actinidia deliciosa)",
+                nombreBadge: "Trampa Kiwi #03",
+                predominante: {
+                    comun: "Burrito de la Vid y Frutales",
+                    cientifico: "Naupactus cervinus",
+                    peligrosidad: "Peligro Radicular",
+                    peligroClase: "badge-danger-alto",
+                    impacto: "Adultos muerden follaje tierno, pero sus larvas bajo tierra devoran las raíces principales del kiwi.",
+                    foto: "https://images.unsplash.com/photo-1544321568-d064e6259e86?q=80&w=800&auto=format&fit=crop",
+                    boxTag: "Naupactus 91.5%"
+                },
+                insectos: ['Burrito de la Raíz', 'Trips de Flores', 'Polilla Enrolladora', 'Cabrito del Ciruelo'],
+                porcentajes: [48, 28, 14, 10],
+                colores: ['#8b5cf6', '#f59e0b', '#10b981', '#cbd5e1'],
+                capturasTotal: 92,
+                capturasEspecie: [44, 26, 13, 9],
+                tratamientoIA: {
+                    titulo: "Bandas Adhesivas en Tronco + Nemátodos Entomopatógenos",
+                    desc: "Barrera mecánica que impide la subida de adultos al follaje y aplicación de nemátodos biológicos al suelo."
+                }
             },
             parra: {
-                nombreBadge: "Trampa Parra #03",
-                resumenTitulo: "Vid: Plaga Cuarentenaria Oficial SAG",
-                resumenDesc: "Lobesia botrana bajo control regulatorio obligatorio. Daño severo en glomérulos y pudriciones.",
-                plagas: ['Lobesia botrana', 'Falsa Arañita (Brevipalpus)', 'Chanchito Blanco', 'Burrito Capacho'],
-                porcentajes: [56, 22, 14, 8],
-                colores: ['#dc2626', '#ea580c', '#06b6d4', '#cbd5e1'],
-                predominante: "LOBESIA B.",
+                icono: "🍇",
+                nombreCultivo: "Parra / Vid (Vitis vinifera)",
+                nombreBadge: "Trampa Parra #05",
+                predominante: {
+                    comun: "Polilla del Racimo de la Vid",
+                    cientifico: "Lobesia botrana",
+                    peligrosidad: "Cuarentenario SAG",
+                    peligroClase: "badge-danger-cuarentena",
+                    impacto: "Plaga obligatoria bajo control SAG. Perfora bayas del racimo provocando pudrición ácida y Botrytis.",
+                    foto: "https://images.unsplash.com/photo-1544321568-d064e6259e86?q=80&w=800&auto=format&fit=crop",
+                    boxTag: "Lobesia 98.2%"
+                },
+                insectos: ['Lobesia botrana', 'Burrito Capacho', 'Trips de la Vid', 'Polilla Enrolladora'],
+                porcentajes: [58, 22, 12, 8],
+                colores: ['#dc2626', '#8b5cf6', '#f59e0b', '#cbd5e1'],
                 capturasTotal: 210,
-                capturasPorEspecie: [118, 46, 29, 17],
-                tratamientos: [
-                    { icono: "⚠️", titulo: "Reporte Obligatorio SAG", subtitulo: "Registro de curva de vuelo Lobesia botrana", fecha: "Hoy, 12:00", tag: "Oficial SAG", tagColor: "bg-red-100 text-red-800" },
-                    { icono: "🍇", titulo: "Revisión Falsa Arañita Roja", subtitulo: "Inspección pedúnculos para EE.UU.", fecha: "Mañana", tag: "Cuarentena", tagColor: "bg-orange-100 text-orange-800" },
-                    { icono: "🌪️", titulo: "Emisores Puffer de Feromona", subtitulo: "Verificación de presión y aerosol", fecha: "20 Sept", tag: "Operativo", tagColor: "bg-emerald-100 text-emerald-800" }
-                ]
+                capturasEspecie: [122, 46, 25, 17],
+                tratamientoIA: {
+                    titulo: "Emisores Puffer de Feromona + Reporte Oficial",
+                    desc: "Activación del sistema de confusión sexual y registro digital de curva de vuelo para fiscalización SAG."
+                }
             },
             nogal: {
+                icono: "🌰",
+                nombreCultivo: "Nogal (Juglans regia)",
                 nombreBadge: "Trampa Nogal #01",
-                resumenTitulo: "Nogal: Plaga Clave Carpocapsa (Cydia pomonella)",
-                resumenDesc: "La larva perfora la nuez en desarrollo devorando la semilla. Daño secundario por Pulgón del Nogal.",
-                plagas: ['Cydia pomonella', 'Pulgón del Nogal', 'Arañita Roja Europea', 'Burrito Curculiónido'],
-                porcentajes: [62, 18, 12, 8],
-                colores: ['#7c2d12', '#84cc16', '#ef4444', '#cbd5e1'],
-                predominante: "CARPOCAPSA",
-                capturasTotal: 185,
-                capturasPorEspecie: [115, 33, 22, 15],
-                tratamientos: [
-                    { icono: "🌰", titulo: "Trampas de Feromona Cydia", subtitulo: "Conteo de mariposas para biofix", fecha: "Hoy, 07:30 AM", tag: "Biofix MIP", tagColor: "bg-amber-100 text-amber-800" },
-                    { icono: "🍃", titulo: "Monitoreo Pulgón Amarillo", subtitulo: "Revisión de fumagina en envés de hojas", fecha: "En 2 días", tag: "Inspección", tagColor: "bg-emerald-100 text-emerald-800" },
-                    { icono: "🦠", titulo: "Aplicación Virus Granulosis (CpGV)", subtitulo: "Control selectivo de larvas neonatas", fecha: "25 Sept", tag: "Biológico", tagColor: "bg-emerald-100 text-emerald-800" }
-                ]
+                predominante: {
+                    comun: "Carpocapsa / Polilla de la Manzana",
+                    cientifico: "Cydia pomonella",
+                    peligrosidad: "Plaga Clave Nuez",
+                    peligroClase: "badge-danger-extremo",
+                    impacto: "La larva barrenadora penetra directamente la cáscara blanda de la nuez y destruye la semilla interior.",
+                    foto: "https://images.unsplash.com/photo-1590845947376-2638caa89309?q=80&w=800&auto=format&fit=crop",
+                    boxTag: "Cydia 95.8%"
+                },
+                insectos: ['Cydia pomonella', 'Pulgón del Nogal', 'Burrito Curculiónido', 'Polilla Secundaria'],
+                porcentajes: [64, 18, 10, 8],
+                colores: ['#7c2d12', '#84cc16', '#8b5cf6', '#cbd5e1'],
+                capturasTotal: 180,
+                capturasEspecie: [115, 32, 18, 15],
+                tratamientoIA: {
+                    titulo: "Virus de la Granulosis (CpGV) + Biofix",
+                    desc: "Aplicación bioinsecticida programada según grados-día acumulados desde la captura de las primeras mariposas."
+                }
             },
             almendro: {
+                icono: "🥜",
+                nombreCultivo: "Almendro (Prunus dulcis)",
                 nombreBadge: "Trampa Almendro #02",
-                resumenTitulo: "Almendro: Control de Escama y Desfoliación",
-                resumenDesc: "Vulnerabilidad a costras leñosas de Escama de San José y ataques tardíos de Carpocapsa y arañitas.",
-                plagas: ['Escama San José', 'Carpocapsa secundaria', 'Arañita Bimaculada', 'Pulgón de Frutales'],
-                porcentajes: [45, 27, 18, 10],
-                colores: ['#f59e0b', '#7c2d12', '#ef4444', '#cbd5e1'],
-                predominante: "ESCAMA S.J.",
-                capturasTotal: 105,
-                capturasPorEspecie: [47, 28, 19, 11],
-                tratamientos: [
-                    { icono: "🪵", titulo: "Poda Sanitaria de Ramillas", subtitulo: "Eliminación de madera infestada por escama", fecha: "Ayer", tag: "Cultural", tagColor: "bg-gray-100 text-gray-800" },
-                    { icono: "🕷️", titulo: "Muestreo de Arañitas", subtitulo: "Conteo con lupa 20x en envés foliar", fecha: "En 4 días", tag: "Preventivo", tagColor: "bg-red-100 text-red-800" },
-                    { icono: "💧", titulo: "Lavado de Fumagina", subtitulo: "Aplicación de agua a presión y jabón potásico", fecha: "26 Sept", tag: "Manejo", tagColor: "bg-blue-100 text-blue-800" }
-                ]
+                predominante: {
+                    comun: "Pulgón de los Frutales",
+                    cientifico: "Brachycaudus spp.",
+                    peligrosidad: "Peligro Medio",
+                    peligroClase: "badge-danger-alto",
+                    impacto: "Coloniza brotes tiernos en primavera, deformando el follaje y secretando abundante mielecilla.",
+                    foto: "https://images.unsplash.com/photo-1590845947376-2638caa89309?q=80&w=800&auto=format&fit=crop",
+                    boxTag: "Pulgón 93.3%"
+                },
+                insectos: ['Pulgón Frutal', 'Cydia pomonella', 'Burrito Verde', 'Trips Floral'],
+                porcentajes: [52, 26, 12, 10],
+                colores: ['#84cc16', '#7c2d12', '#8b5cf6', '#cbd5e1'],
+                capturasTotal: 110,
+                capturasEspecie: [57, 29, 13, 11],
+                tratamientoIA: {
+                    titulo: "Jabón Potásico + Extracto de Neem",
+                    desc: "Lavado foliar ecológico que disuelve la cutícula del insecto y limpia la fumagina sin dejar residuos."
+                }
             }
         };
 
@@ -532,69 +618,95 @@
         let chartBarInstance = null;
         let frutalActual = 'cerezo';
 
-        // FUNCIÓN CLAVE: CAMBIAR FRUTAL Y ACTUALIZAR DASHBOARD EN TIEMPO REAL
+        // --- MANEJO DEL SUBMENÚ PLEGABLE ---
+        function toggleSubmenuFrutal(e) {
+            e.stopPropagation();
+            const dd = document.getElementById('dropdown-frutales');
+            dd.classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', () => {
+            const dd = document.getElementById('dropdown-frutales');
+            if (dd && !dd.classList.contains('hidden')) dd.classList.add('hidden');
+        });
+
+        // --- CAMBIAR FRUTAL Y ACTUALIZAR EL DASHBOARD ---
         function seleccionarFrutal(tipo) {
             frutalActual = tipo;
-            const data = DATA_FRUTALES[tipo];
+            const data = BASE_INSECTOS[tipo];
 
-            // 1. Actualizar estilos de botones
-            document.querySelectorAll('.fruit-btn').forEach(btn => {
-                btn.classList.remove('fruit-btn-active');
-            });
-            const activo = document.getElementById(`btn-${tipo}`);
-            if (activo) activo.classList.add('fruit-btn-active');
-
-            // 2. Actualizar Textos y Badges
+            // 1. Actualizar Tarjeta de Cultivo
+            document.getElementById('frutal-icono-current').innerText = data.icono;
+            document.getElementById('frutal-nombre-current').innerText = data.nombreCultivo;
             document.getElementById('nodo-badge').innerText = data.nombreBadge;
-            document.getElementById('cultivo-resumen-titulo').innerText = data.resumenTitulo;
-            document.getElementById('cultivo-resumen-desc').innerText = data.resumenDesc;
-            document.getElementById('total-capturas-diarias').innerText = data.capturasTotal;
 
-            // 3. Actualizar Donut Chart
-            document.getElementById('donut-center-name').innerText = data.predominante;
-            document.getElementById('donut-center-pct').innerText = `Plaga Principal: ${data.porcentajes[0]}%`;
+            // 2. Actualizar el Recuadro de Última Captura Predominante
+            document.getElementById('img-predominante').src = data.predominante.foto;
+            document.getElementById('box-predominante-tag').innerText = data.predominante.boxTag;
+            document.getElementById('nombre-comun-predominante').innerText = data.predominante.comun;
+            document.getElementById('nombre-cientifico-predominante').innerText = data.predominante.cientifico;
+            document.getElementById('desc-impacto-predominante').innerText = data.predominante.impacto;
+            
+            const badge = document.getElementById('badge-peligro');
+            badge.className = `${data.predominante.peligroClase} px-3 py-1 rounded-full text-xs font-black`;
+            badge.innerText = data.predominante.peligrosidad;
 
-            chartDonutInstance.data.labels = data.plagas;
+            // 3. Actualizar Gráfico Donut
+            document.getElementById('donut-center-name').innerText = data.insectos[0];
+            document.getElementById('donut-center-pct').innerText = `${data.porcentajes[0]}% de Capturas`;
+
+            chartDonutInstance.data.labels = data.insectos;
             chartDonutInstance.data.datasets[0].data = data.porcentajes;
             chartDonutInstance.data.datasets[0].backgroundColor = data.colores;
             chartDonutInstance.update();
 
-            // 4. Actualizar Leyendas del Donut
+            // 4. Actualizar Leyendas Donut
             const legendsContainer = document.getElementById('donut-legends-container');
             legendsContainer.innerHTML = '';
-            data.plagas.forEach((plaga, idx) => {
+            data.insectos.forEach((ins, idx) => {
                 legendsContainer.innerHTML += `
                     <div class="flex items-center gap-2">
                         <div class="w-3.5 h-3.5 rounded-full shrink-0" style="background-color: ${data.colores[idx]}"></div>
-                        <span class="truncate">${plaga} (${data.porcentajes[idx]}%)</span>
+                        <span class="truncate">${ins} (${data.porcentajes[idx]}%)</span>
                     </div>
                 `;
             });
 
             // 5. Actualizar Bar Chart
-            chartBarInstance.data.labels = data.plagas.map(p => p.length > 10 ? p.substring(0, 9) + '..' : p);
-            chartBarInstance.data.datasets[0].data = data.capturasPorEspecie;
+            document.getElementById('total-capturas-diarias').innerText = data.capturasTotal;
+            chartBarInstance.data.labels = data.insectos;
+            chartBarInstance.data.datasets[0].data = data.capturasEspecie;
             chartBarInstance.update();
 
-            // 6. Actualizar Tarjetas de Tratamiento (MIP)
-            const tratContainer = document.getElementById('tratamientos-container');
-            tratContainer.innerHTML = '';
-            data.tratamientos.forEach(t => {
-                tratContainer.innerHTML += `
-                    <div class="bg-gray-50/80 rounded-2xl p-3.5 flex items-center gap-3 border border-gray-100 hover:shadow-sm transition-shadow cursor-pointer">
-                        <div class="w-11 h-11 bg-[#eaffec] rounded-2xl flex items-center justify-center text-lg shrink-0">${t.icono}</div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="font-bold text-xs truncate">${t.titulo}</h4>
-                            <p class="text-[11px] text-gray-400 truncate">${t.subtitulo}</p>
-                            <span class="text-[11px] font-semibold text-gray-800">${t.fecha}</span>
-                        </div>
-                        <span class="${t.tagColor} font-bold text-[10px] px-2.5 py-1 rounded-full whitespace-nowrap">${t.tag}</span>
-                    </div>
-                `;
-            });
+            // 6. Actualizar Diagnóstico y Tratamiento Sugerido por IA
+            document.getElementById('ia-tratamiento-titulo').innerText = data.tratamientoIA.titulo;
+            document.getElementById('ia-tratamiento-desc').innerText = data.tratamientoIA.desc;
+
+            // Cerrar menú
+            document.getElementById('dropdown-frutales').classList.add('hidden');
         }
 
-        // GENERADOR DE CALENDARIO: 30 DÍAS ACTIVOS
+        // --- MÓDULO INTERACTIVO DEL ENCARGADO DE CAMPO ---
+        function procesarFotoCampo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('label-foto').innerText = file.name.substring(0, 15) + '...';
+                alert("Foto de daño foliar recibida. El motor TinyML analizará los patrones de picada para ajustar la severidad.");
+            }
+        }
+
+        function guardarReporteCampo() {
+            const obs = document.getElementById('input-observacion').value;
+            if (!obs.trim()) {
+                alert("Por favor escribe una breve observación de campo.");
+                return;
+            }
+            alert(`Reporte guardado con éxito:\n"${obs}"\nLa recomendación de tratamiento fue recalculada y enviada a los agrónomos.`);
+            document.getElementById('input-observacion').value = '';
+            document.getElementById('label-foto').innerText = 'Subir Foto Afectación';
+        }
+
+        // --- GENERADOR DE CALENDARIO 30 DÍAS ACTIVOS ---
         const calendarGrid = document.getElementById('calendar-grid');
         const diasConPunto = [5, 12, 14, 18, 22, 25];
 
@@ -621,7 +733,7 @@
             calendarGrid.appendChild(btn);
         }
 
-        // MODAL DE CALENDARIO 4X
+        // --- MODAL DE CALENDARIO 4X ---
         const calModalContent = document.getElementById('modal-calendario-content');
         let isCalModalOpen = false;
 
@@ -629,26 +741,22 @@
             closeAllCenterModals();
             document.getElementById('cal-modal-fecha').innerText = `${dia} de Septiembre, 2026`;
             
-            const currentData = DATA_FRUTALES[frutalActual];
+            const currentData = BASE_INSECTOS[frutalActual];
             const img = document.getElementById('cal-modal-img');
-            
-            // Imagen representativa
-            img.src = dia % 2 === 0 
-                ? "https://images.unsplash.com/photo-1590845947376-2638caa89309?q=80&w=800&auto=format&fit=crop"
-                : "https://images.unsplash.com/photo-1544321568-d064e6259e86?q=80&w=800&auto=format&fit=crop";
+            img.src = currentData.predominante.foto;
 
             const listContainer = document.getElementById('cal-modal-plagas-lista');
-            listContainer.innerHTML = `<h4 class="font-extrabold text-sm text-gray-800 border-b border-gray-100 pb-2">Plagas Validadas en ${currentData.nombreBadge}:</h4>`;
+            listContainer.innerHTML = `<h4 class="font-extrabold text-sm text-gray-800 border-b border-gray-100 pb-2">Capturas en ${currentData.nombreCultivo}:</h4>`;
             
-            currentData.plagas.forEach((plaga, idx) => {
-                const count = Math.max(1, Math.floor(currentData.capturasPorEspecie[idx] * (dia / 20)));
+            currentData.insectos.forEach((ins, idx) => {
+                const count = Math.max(1, Math.floor(currentData.capturasEspecie[idx] * (dia / 20)));
                 listContainer.innerHTML += `
                     <div class="bg-gray-50 p-3 rounded-2xl flex items-center justify-between">
                         <div class="flex items-center gap-2.5">
                             <div class="w-3.5 h-3.5 rounded-full" style="background-color: ${currentData.colores[idx]}"></div>
-                            <span class="font-bold text-xs text-gray-800">${plaga}</span>
+                            <span class="font-bold text-xs text-gray-800">${ins}</span>
                         </div>
-                        <span class="text-sm font-black text-gray-900">${count} u</span>
+                        <span class="text-sm font-black text-gray-900">${count} individuos</span>
                     </div>
                 `;
             });
@@ -664,7 +772,7 @@
             isCalModalOpen = false;
         }
 
-        // MODALES LATERALES CENTRADOS
+        // --- MODALES LATERALES CENTRADOS ---
         let activeCenterModal = null;
         function openCenterModal(event, modalId) {
             event.stopPropagation();
@@ -692,7 +800,6 @@
             }
         }
 
-        // CIERRE AL CLICKEAR FUERA
         document.addEventListener('click', (event) => {
             if (isCalModalOpen && !calModalContent.contains(event.target)) cerrarCalendarioModal();
             if (activeCenterModal) {
@@ -701,7 +808,7 @@
             }
         });
 
-        // SWITCH ONLINE / OFFLINE
+        // --- SWITCH ONLINE/OFFLINE ---
         let isOnline = true;
         function toggleOnlineState() {
             isOnline = !isOnline;
@@ -721,16 +828,10 @@
         }
 
         function simularInferencia() {
-            const badge = document.getElementById('nodo-badge');
-            const originalText = badge.innerText;
-            badge.innerText = "Analizando TinyML...";
-            setTimeout(() => {
-                badge.innerText = originalText;
-                alert(`Inferencia ESP32 completada para ${DATA_FRUTALES[frutalActual].nombreBadge}. Plaga confirmada: ${DATA_FRUTALES[frutalActual].plagas[0]}`);
-            }, 800);
+            alert(`Inferencia TinyML ejecutada en ESP32-CAM. Insecto identificado: ${BASE_INSECTOS[frutalActual].predominante.comun} (${BASE_INSECTOS[frutalActual].predominante.cientifico}) con 96.4% de confianza.`);
         }
 
-        // INICIALIZACIÓN DE GRÁFICOS
+        // --- INICIALIZACIÓN DE GRÁFICOS CHART.JS ---
         window.addEventListener('DOMContentLoaded', () => {
             // 1. Donut
             const ctxDonut = document.getElementById('donutChart').getContext('2d');
@@ -799,7 +900,7 @@
                 }
             });
 
-            // Carga inicial con Cerezo
+            // Carga inicial en Cerezo
             seleccionarFrutal('cerezo');
         });
     </script>
