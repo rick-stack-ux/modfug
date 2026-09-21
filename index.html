@@ -10,14 +10,14 @@
     <style>
         html { font-size: 19.2px; }
 
-        /* SISTEMA DE VARIABLES CSS PARA TEMAS */
+        /* VARIABLES DE TEMA */
         :root[data-theme="original"] {
             --bg-body: #f1f3f4;
             --bg-card: #ffffff;
             --bg-subcard: #f8fafc;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --border-color: #f1f5f9;
+            --border-color: #e2e8f0;
             --card-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
             --chart-grid: rgba(0, 0, 0, 0.05);
         }
@@ -52,20 +52,20 @@
         }
 
         .theme-card {
-            background-color: var(--bg-card);
-            border-color: var(--border-color);
-            color: var(--text-main);
+            background-color: var(--bg-card) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-main) !important;
             box-shadow: var(--card-shadow);
         }
 
         .theme-subcard {
-            background-color: var(--bg-subcard);
-            border-color: var(--border-color);
-            color: var(--text-main);
+            background-color: var(--bg-subcard) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-main) !important;
         }
 
         .theme-muted {
-            color: var(--text-muted);
+            color: var(--text-muted) !important;
         }
 
         .contour-modal-shadow {
@@ -73,7 +73,7 @@
         }
 
         .center-modal {
-            transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
 
         ::-webkit-scrollbar { width: 6px; }
@@ -85,37 +85,44 @@
             text-align: center; pointer-events: none;
         }
 
+        [contenteditable="true"] {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            cursor: text;
+        }
+
         [contenteditable="true"]:focus {
             outline: 2px dashed #a3e635;
-            background: rgba(163, 230, 53, 0.1);
+            background: rgba(163, 230, 53, 0.12);
             border-radius: 6px;
         }
 
         .badge-danger-extremo { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
         .badge-danger-alto { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
 
-        /* Estilos Drag & Drop */
-        .draggable-column {
+        /* Drag & Drop controlado por Handle */
+        .drag-handle {
             cursor: grab;
-            transition: transform 0.2s ease, opacity 0.2s ease;
         }
-        .draggable-column:active {
+        .drag-handle:active {
             cursor: grabbing;
         }
         .draggable-column.dragging {
-            opacity: 0.45;
-            transform: scale(0.98);
+            opacity: 0.35;
+            outline: 2px dashed #a3e635;
+            border-radius: 2rem;
         }
         .draggable-column.drag-over {
-            border: 2px dashed #a3e635;
+            transform: scale(1.01);
+            outline: 2px solid #a3e635;
             border-radius: 2rem;
         }
     </style>
 </head>
-<body class="flex w-screen h-screen p-4 gap-6 select-none overflow-hidden">
+<body class="flex w-screen h-screen p-4 gap-6 overflow-hidden">
 
     <!-- BARRA LATERAL -->
-    <aside class="w-20 bg-[#121212] rounded-[2.5rem] flex flex-col items-center py-8 justify-between shadow-2xl z-40 shrink-0">
+    <aside class="w-20 bg-[#121212] rounded-[2.5rem] flex flex-col items-center py-8 justify-between shadow-2xl z-30 shrink-0 select-none">
         <div class="flex flex-col items-center gap-9 w-full">
             <div class="w-12 h-12 bg-[#a3e635] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(163,230,53,0.35)] cursor-pointer">
                 <svg class="w-7 h-7 text-green-950" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1010 10A10.011 10.011 0 0012 2zm1 14.93V17a1 1 0 01-2 0v-.07A7.003 7.003 0 015.07 11H5a1 1 0 010-2h.07A7.003 7.003 0 0111 5.07V5a1 1 0 012 0v.07A7.003 7.003 0 0118.93 11H19a1 1 0 010 2h-.07A7.003 7.003 0 0113 16.93z"/></svg>
@@ -125,20 +132,20 @@
                 <button title="Inicio" onclick="closeAllCenterModals()" class="text-white hover:text-[#a3e635] transition-colors">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 </button>
-                <button title="Historial de Poblaciones" onclick="openCenterModal(event, 'modal-historial')" class="text-gray-500 hover:text-white transition-colors">
+                <button title="Historial de Poblaciones" onclick="openCenterModal('modal-historial')" class="text-gray-500 hover:text-white transition-colors">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 </button>
-                <button title="Usuarios y Accesos" onclick="openCenterModal(event, 'modal-usuarios')" class="text-gray-500 hover:text-white transition-colors">
+                <button title="Usuarios y Accesos" onclick="openCenterModal('modal-usuarios')" class="text-gray-500 hover:text-white transition-colors">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </button>
-                <button title="Asistencia y Soporte" onclick="openCenterModal(event, 'modal-asistencia')" class="text-[#a3e635] hover:text-white transition-transform hover:scale-110">
+                <button title="Asistencia y Soporte" onclick="openCenterModal('modal-asistencia')" class="text-[#a3e635] hover:text-white transition-transform hover:scale-110">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </button>
             </nav>
         </div>
 
         <div class="flex flex-col items-center gap-7 w-full">
-            <button title="Ajustes de Plataforma" onclick="openCenterModal(event, 'modal-config')" class="text-gray-500 hover:text-white transition-colors">
+            <button title="Ajustes de Plataforma" onclick="openCenterModal('modal-config')" class="text-gray-500 hover:text-white transition-colors">
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             </button>
             <button title="Recargar" onclick="location.reload()" class="text-gray-500 hover:text-red-400 transition-colors">
@@ -151,16 +158,16 @@
     <main class="flex-1 h-full overflow-y-auto pr-2 flex flex-col gap-6">
         
         <!-- HEADER -->
-        <header class="flex flex-wrap justify-between items-center pt-2">
+        <header class="flex flex-wrap justify-between items-center pt-2 select-none">
             <div>
                 <div class="flex items-center gap-2">
-                    <h1 id="admin-field-name" contenteditable="true" class="text-3xl font-black tracking-tight cursor-pointer">Cuartel San Pedro - Lote Central</h1>
+                    <h1 id="admin-field-name" contenteditable="true" class="text-3xl font-black tracking-tight cursor-text">Cuartel San Pedro - Lote Central</h1>
                     <span class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded font-mono font-bold">✏️ Admin</span>
                 </div>
                 <div class="flex items-center gap-4 text-xs font-semibold theme-muted mt-1">
                     <span class="flex items-center gap-1.5">
                         <span class="text-base">📍</span> 
-                        GPS: <span id="admin-field-gps" contenteditable="true" class="font-mono">-34.1820° S, -70.7180° W</span>
+                        GPS: <span id="admin-field-gps" contenteditable="true" class="font-mono cursor-text">-34.1820° S, -70.7180° W</span>
                     </span>
                     <span class="opacity-30">•</span>
                     <button id="toggle-online-btn" onclick="toggleOnlineState()" class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold transition-colors">
@@ -181,23 +188,26 @@
             </div>
         </header>
 
-        <!-- DASHBOARD GRID (COLUMNAS ARRASTRABLES / DRAGGABLE) -->
+        <!-- DASHBOARD GRID REORDENABLE -->
         <div id="dashboard-grid-container" class="grid grid-cols-1 xl:grid-cols-12 gap-6 pb-8">
             
             <!-- COLUMNA A: CULTIVO Y ÚLTIMA CAPTURA -->
-            <div id="col-a" draggable="true" class="draggable-column xl:col-span-4 flex flex-col gap-6">
+            <div id="col-a" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 
                 <!-- CULTIVO MONITOREADO -->
-                <div class="theme-card rounded-[2rem] p-5 border flex flex-col justify-between">
+                <div class="theme-card rounded-[2rem] p-5 border flex flex-col justify-between relative">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
                             <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-2xl" id="frutal-icono">🍒</div>
                             <div>
                                 <span class="text-[11px] font-extrabold uppercase tracking-wider theme-muted block">Cultivo Monitoreado</span>
-                                <h3 id="frutal-input-nombre" contenteditable="true" onblur="consultarIAEspecie()" class="font-black text-lg leading-tight cursor-text" title="Edita el cultivo y presiona Enter">Cerezo (Prunus avium)</h3>
+                                <h3 id="frutal-input-nombre" contenteditable="true" onblur="consultarIAEspecie()" class="font-black text-lg leading-tight cursor-text" title="Edita el cultivo y presiona fuera para actualizar">Cerezo (Prunus avium)</h3>
                             </div>
                         </div>
-                        <span class="cursor-pointer text-blue-600 font-bold text-xs" onclick="toggleSubmenuRapido(event)">Seleccionar ▼</span>
+                        <div class="flex items-center gap-2">
+                            <span class="cursor-pointer text-blue-600 font-bold text-xs hover:underline" onclick="toggleSubmenuRapido(event)">Seleccionar ▼</span>
+                            <span class="drag-handle text-gray-400 hover:text-gray-700 px-1 text-base select-none" title="Arrastrar Columna">⠿</span>
+                        </div>
                     </div>
 
                     <div id="dropdown-rapido" class="hidden mt-3 pt-3 border-t grid grid-cols-3 gap-1 text-center text-[11px] font-bold" style="border-color: var(--border-color);">
@@ -212,7 +222,7 @@
 
                 <!-- ÚLTIMA CAPTURA PREDOMINANTE -->
                 <div class="theme-card rounded-[2rem] p-6 border flex-1 flex flex-col justify-start">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex justify-between items-center mb-4 select-none">
                         <h3 class="font-extrabold text-base flex items-center gap-2">
                             Última Detección Predominante
                             <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
@@ -253,49 +263,55 @@
             </div>
 
             <!-- COLUMNA B: CALENDARIO Y POBLACIÓN -->
-            <div id="col-b" draggable="true" class="draggable-column xl:col-span-4 flex flex-col gap-6">
+            <div id="col-b" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 <!-- CALENDARIO DINÁMICO -->
                 <div class="theme-card rounded-[2rem] p-6 border">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="font-bold text-lg" id="calendar-header-title">Historial Septiembre 2026</h3>
+                    <div class="flex justify-between items-center mb-4 select-none">
+                        <div class="flex items-center gap-2">
+                            <span class="drag-handle text-gray-400 hover:text-gray-700 px-1 text-base select-none" title="Arrastrar Columna">⠿</span>
+                            <h3 class="font-bold text-lg" id="calendar-header-title">Historial Septiembre 2026</h3>
+                        </div>
                         <div class="flex gap-2 text-xs font-bold theme-muted">
                             <button onclick="cambiarMesCalendario(-1)" class="w-8 h-8 rounded-full theme-subcard flex items-center justify-center hover:opacity-80 transition-opacity" title="Mes Anterior">&lt;</button>
                             <button onclick="cambiarMesCalendario(1)" class="w-8 h-8 rounded-full theme-subcard flex items-center justify-center hover:opacity-80 transition-opacity" title="Mes Siguiente">&gt;</button>
                         </div>
                     </div>
                     
-                    <div class="grid grid-cols-7 gap-y-2 text-center mb-1 text-xs font-bold theme-muted">
+                    <div class="grid grid-cols-7 gap-y-2 text-center mb-1 text-xs font-bold theme-muted select-none">
                         <div>L</div><div>M</div><div>M</div><div>J</div><div>V</div><div>S</div><div>D</div>
                     </div>
-                    <div class="grid grid-cols-7 gap-y-2 text-center text-sm font-semibold" id="calendar-grid"></div>
+                    <div class="grid grid-cols-7 gap-y-2 text-center text-sm font-semibold select-none" id="calendar-grid"></div>
                 </div>
 
                 <!-- Donut Chart -->
                 <div class="theme-card rounded-[2rem] p-6 border flex-1 flex flex-col relative min-h-[380px]">
-                    <div class="flex justify-between items-center mb-1">
+                    <div class="flex justify-between items-center mb-1 select-none">
                         <h3 class="font-bold text-lg">Población de Insectos</h3>
                         <span class="text-xl">📊</span>
                     </div>
                     
                     <div class="relative flex-1 w-full mt-2">
                         <canvas id="donutChart"></canvas>
-                        <div class="chart-center-text">
+                        <div class="chart-center-text select-none">
                             <span class="block text-2xl font-black leading-none tracking-tight uppercase" id="donut-center-name">D. SUZUKII</span>
                             <span class="block text-xs font-bold uppercase tracking-widest mt-2 theme-muted" id="donut-center-pct">54% de Capturas</span>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2.5 mt-4 pt-3 border-t text-xs font-bold" id="donut-legends-container" style="border-color: var(--border-color);"></div>
+                    <div class="grid grid-cols-2 gap-2.5 mt-4 pt-3 border-t text-xs font-bold select-none" id="donut-legends-container" style="border-color: var(--border-color);"></div>
                 </div>
             </div>
 
             <!-- COLUMNA C: SENSORES, BARRAS Y MIP -->
-            <div id="col-c" draggable="true" class="draggable-column xl:col-span-4 flex flex-col gap-6">
+            <div id="col-c" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 <!-- Métricas IoT -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="theme-card rounded-[2rem] p-5 border flex flex-col justify-between">
+                <div class="grid grid-cols-2 gap-4 select-none">
+                    <div class="theme-card rounded-[2rem] p-5 border flex flex-col justify-between relative">
                         <div class="flex justify-between items-center mb-2 font-bold text-sm">
-                            <span>Trampas IoT</span>
+                            <span class="flex items-center gap-1">
+                                <span class="drag-handle text-gray-400 hover:text-gray-700 text-base select-none" title="Arrastrar Columna">⠿</span>
+                                Trampas IoT
+                            </span>
                             <span>📡</span>
                         </div>
                         <div class="space-y-1 text-xs font-semibold">
@@ -315,7 +331,7 @@
                 </div>
 
                 <!-- Barras Verticales -->
-                <div class="theme-card rounded-[2rem] p-6 border flex flex-col">
+                <div class="theme-card rounded-[2rem] p-6 border flex flex-col select-none">
                     <div class="flex justify-between items-start mb-3">
                         <div>
                             <h3 class="font-bold text-base mb-1">Capturas Diarias</h3>
@@ -334,7 +350,7 @@
                 <!-- Módulo MIP Interactivo -->
                 <div class="theme-card rounded-[2rem] p-6 border flex-1 flex flex-col justify-between">
                     <div>
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex justify-between items-center mb-3 select-none">
                             <h3 class="font-extrabold text-lg">Manejo de Campo (MIP)</h3>
                             <span class="text-[11px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">Encargado</span>
                         </div>
@@ -345,7 +361,7 @@
                                     <span>📷</span> <span id="label-foto">Subir Foto Afectación</span>
                                     <input type="file" accept="image/*" class="hidden" onchange="procesarFotoCampo(event)">
                                 </label>
-                                <button onclick="guardarReporteCampo()" class="bg-[#a3e635] text-green-950 font-black px-4 py-2.5 rounded-xl text-xs hover:bg-[#86efac] transition-all">
+                                <button type="button" onclick="guardarReporteCampo()" class="bg-[#a3e635] text-green-950 font-black px-4 py-2.5 rounded-xl text-xs hover:bg-[#86efac] transition-all">
                                     Registrar
                                 </button>
                             </div>
@@ -363,7 +379,7 @@
                         </div>
                     </div>
 
-                    <div class="mt-3 text-[11px] theme-muted font-medium text-right">
+                    <div class="mt-3 text-[11px] theme-muted font-medium text-right select-none">
                         Validado según protocolos SAG Chile
                     </div>
                 </div>
@@ -462,7 +478,7 @@
         </div>
     </div>
 
-    <!-- MODAL AJUSTES (DEPURADO SIN UMBRAL MÍNIMO TINYML) -->
+    <!-- MODAL AJUSTES -->
     <div id="modal-config-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
         <div id="modal-config" class="center-modal pointer-events-auto hidden opacity-0 scale-95 theme-card rounded-[2.5rem] p-8 w-[750px] max-w-[95vw] contour-modal-shadow border">
             <div class="flex justify-between items-center border-b pb-4 mb-6" style="border-color: var(--border-color);">
@@ -474,7 +490,7 @@
             </div>
 
             <div class="space-y-6">
-                <!-- IDIOMA (AHORA OCUPA TODO EL ANCHO TRAS QUITAR UMBRAL) -->
+                <!-- IDIOMA -->
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider theme-muted mb-2">IDIOMA</label>
                     <select id="config-idioma" class="w-full theme-subcard border rounded-2xl px-4 py-3 outline-none font-bold text-sm" style="border-color: var(--border-color);">
@@ -499,11 +515,11 @@
                     </div>
                 </div>
 
-                <!-- INSTRUCCIÓN Y SELECTOR DE PRESET DE COLUMNAS -->
+                <!-- SELECTOR PRESET DE COLUMNAS -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label class="block text-xs font-bold uppercase tracking-wider theme-muted">PRESET DE COLUMNAS</label>
-                        <span class="text-[11px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full">💡 También puedes arrastrar las columnas directamente en pantalla</span>
+                        <span class="text-[11px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full">💡 Usa el icono ⠿ para arrastrar</span>
                     </div>
                     <select id="config-layout" onchange="aplicarLayout(this.value)" class="w-full theme-subcard border rounded-2xl px-4 py-3 font-bold text-sm outline-none" style="border-color: var(--border-color);">
                         <option value="abc">Diseño Estándar: Cultivo | Calendario | Manejo</option>
@@ -513,8 +529,8 @@
                 </div>
 
                 <div class="pt-4 border-t flex justify-end gap-3" style="border-color: var(--border-color);">
-                    <button onclick="closeAllCenterModals()" class="px-5 py-3 rounded-2xl font-bold text-xs theme-muted hover:opacity-80">Cancelar</button>
-                    <button onclick="guardarPresetUsuario()" class="bg-[#a3e635] hover:bg-[#86efac] text-green-950 font-black px-6 py-3 rounded-2xl text-xs shadow">Guardar Preset</button>
+                    <button type="button" onclick="closeAllCenterModals()" class="px-5 py-3 rounded-2xl font-bold text-xs theme-muted hover:opacity-80">Cancelar</button>
+                    <button type="button" onclick="guardarPresetUsuario()" class="bg-[#a3e635] hover:bg-[#86efac] text-green-950 font-black px-6 py-3 rounded-2xl text-xs shadow">Guardar Preset</button>
                 </div>
             </div>
         </div>
@@ -564,7 +580,7 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT: ROTACIÓN, TEMAS, DRAG & DROP Y PERSISTENCIA -->
+    <!-- JAVASCRIPT: LÓGICA Y EVENTOS -->
     <script>
         let chartDonutInstance = null;
         let chartBarInstance = null;
@@ -600,6 +616,7 @@
         function rotarCapturaPredominante() {
             const data = CAPTURAS_ROTATIVAS[indexCapturaRotativa];
             const imgEl = document.getElementById('img-predominante');
+            if (!imgEl) return;
             
             imgEl.style.opacity = '0.3';
             setTimeout(() => {
@@ -621,7 +638,7 @@
 
         setInterval(rotarCapturaPredominante, 10 * 60 * 1000);
 
-        // MOTOR DE TEMAS OPERATIVO
+        // MOTOR DE TEMAS
         function aplicarTema(theme) {
             document.documentElement.setAttribute('data-theme', theme);
             actualizarColoresGraficos();
@@ -648,6 +665,7 @@
 
         function renderizarCalendario() {
             const container = document.getElementById('calendar-grid');
+            if (!container) return;
             container.innerHTML = '';
             document.getElementById('calendar-header-title').innerText = `Historial ${NOMBRES_MESES[mesActualIndex]} ${anioActual}`;
 
@@ -657,6 +675,7 @@
 
             for (let dia = 1; dia <= diasEnMes; dia++) {
                 const btn = document.createElement('button');
+                btn.type = 'button';
                 const esPasadoOHoy = dia <= diaDeHoy;
 
                 if (esPasadoOHoy) {
@@ -731,18 +750,20 @@
 
         function cerrarCalendarioModal() {
             const content = document.getElementById('modal-calendario-content');
-            content.classList.remove('opacity-100', 'scale-100');
-            content.classList.add('opacity-0', 'scale-95');
+            if (content) {
+                content.classList.remove('opacity-100', 'scale-100');
+                content.classList.add('opacity-0', 'scale-95');
+            }
             isCalModalOpen = false;
         }
 
         let activeCenterModal = null;
-        function openCenterModal(event, modalId) {
-            event.stopPropagation();
+        function openCenterModal(modalId) {
             cerrarCalendarioModal();
             if (activeCenterModal && activeCenterModal !== modalId) closeAllCenterModals();
 
             const modal = document.getElementById(modalId);
+            if (!modal) return;
             modal.classList.remove('hidden');
             setTimeout(() => {
                 modal.classList.remove('opacity-0', 'scale-95');
@@ -754,47 +775,69 @@
         function closeAllCenterModals() {
             if (activeCenterModal) {
                 const modal = document.getElementById(activeCenterModal);
-                modal.classList.remove('opacity-100', 'scale-100');
-                modal.classList.add('opacity-0', 'scale-95');
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                    activeCenterModal = null;
-                }, 200);
+                if (modal) {
+                    modal.classList.remove('opacity-100', 'scale-100');
+                    modal.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                    }, 200);
+                }
+                activeCenterModal = null;
             }
         }
 
+        // Clic exterior para cerrar modales
         document.addEventListener('click', (e) => {
-            if (isCalModalOpen && !document.getElementById('modal-calendario-content').contains(e.target)) cerrarCalendarioModal();
+            if (isCalModalOpen) {
+                const calContent = document.getElementById('modal-calendario-content');
+                if (calContent && !calContent.contains(e.target) && !e.target.closest('#calendar-grid')) {
+                    cerrarCalendarioModal();
+                }
+            }
             if (activeCenterModal) {
                 const m = document.getElementById(activeCenterModal);
-                if (!m.contains(e.target)) closeAllCenterModals();
+                if (m && !m.contains(e.target) && !e.target.closest('aside')) {
+                    closeAllCenterModals();
+                }
             }
         });
 
         function toggleSubmenuRapido(e) {
             e.stopPropagation();
-            document.getElementById('dropdown-rapido').classList.toggle('hidden');
+            const dd = document.getElementById('dropdown-rapido');
+            if (dd) dd.classList.toggle('hidden');
         }
 
         function setFrutalRapido(nombre, icono) {
-            document.getElementById('frutal-input-nombre').innerText = nombre;
-            document.getElementById('frutal-icono').innerText = icono;
-            document.getElementById('dropdown-rapido').classList.add('hidden');
+            const nombreEl = document.getElementById('frutal-input-nombre');
+            const iconoEl = document.getElementById('frutal-icono');
+            if (nombreEl) nombreEl.innerText = nombre;
+            if (iconoEl) iconoEl.innerText = icono;
+            
+            const dd = document.getElementById('dropdown-rapido');
+            if (dd) dd.classList.add('hidden');
             consultarIAEspecie();
         }
 
         function consultarIAEspecie() {
-            // Actualización reactiva automática
+            const cultivo = document.getElementById('frutal-input-nombre').innerText;
+            console.log("Cultivo actualizado a:", cultivo);
         }
 
-        // ================= SISTEMA DRAG & DROP DE COLUMNAS =================
-        let draggedCol = null;
-
+        // DRAG & DROP AISLADO MEDIANTE HANDLE
         function inicializarDragAndDrop() {
             const columns = document.querySelectorAll('.draggable-column');
             const container = document.getElementById('dashboard-grid-container');
+            let draggedCol = null;
 
             columns.forEach(col => {
+                const handle = col.querySelector('.drag-handle');
+                if (!handle) return;
+
+                handle.addEventListener('mousedown', () => {
+                    col.setAttribute('draggable', 'true');
+                });
+
                 col.addEventListener('dragstart', (e) => {
                     draggedCol = col;
                     col.classList.add('dragging');
@@ -803,6 +846,7 @@
 
                 col.addEventListener('dragend', () => {
                     col.classList.remove('dragging');
+                    col.removeAttribute('draggable');
                     columns.forEach(c => c.classList.remove('drag-over'));
                     draggedCol = null;
                     sincronizarPresetSelect();
@@ -841,17 +885,14 @@
 
         function obtenerOrdenColumnasActual() {
             const container = document.getElementById('dashboard-grid-container');
-            const ids = Array.from(container.children).map(c => c.id);
-            return ids; // ej: ['col-a', 'col-b', 'col-c']
+            return Array.from(container.children).map(c => c.id);
         }
 
         function sincronizarPresetSelect() {
             const orden = obtenerOrdenColumnasActual().map(id => id.replace('col-', '')).join('');
             const select = document.getElementById('config-layout');
-            if (select) {
-                if (orden === 'abc' || orden === 'bac' || orden === 'cba') {
-                    select.value = orden;
-                }
+            if (select && (orden === 'abc' || orden === 'bac' || orden === 'cba')) {
+                select.value = orden;
             }
         }
 
@@ -884,18 +925,22 @@
 
             localStorage.setItem('aurumtrap_preset', JSON.stringify({ idioma, ordenColumnas, tema }));
             closeAllCenterModals();
-            alert("Preset de columnas y preferencias guardado con éxito.");
+            alert("Preset guardado con éxito.");
         }
 
         function cargarPresetGuardado() {
             const raw = localStorage.getItem('aurumtrap_preset');
             if (raw) {
-                const p = JSON.parse(raw);
-                if (p.tema) aplicarTema(p.tema);
-                if (p.idioma) document.getElementById('config-idioma').value = p.idioma;
-                if (p.ordenColumnas && Array.isArray(p.ordenColumnas)) {
-                    aplicarLayout(p.ordenColumnas);
-                    sincronizarPresetSelect();
+                try {
+                    const p = JSON.parse(raw);
+                    if (p.tema) aplicarTema(p.tema);
+                    if (p.idioma) document.getElementById('config-idioma').value = p.idioma;
+                    if (p.ordenColumnas && Array.isArray(p.ordenColumnas)) {
+                        aplicarLayout(p.ordenColumnas);
+                        sincronizarPresetSelect();
+                    }
+                } catch (e) {
+                    console.error("Error al cargar preset:", e);
                 }
             }
         }
@@ -922,14 +967,14 @@
         function procesarFotoCampo(e) {
             if (e.target.files[0]) {
                 document.getElementById('label-foto').innerText = e.target.files[0].name.substring(0, 15) + '...';
-                alert("Foto recibida. IA recalculando.");
+                alert("Foto recibida. IA recalculando diagnóstico.");
             }
         }
 
         function guardarReporteCampo() {
             const obs = document.getElementById('input-observacion').value;
-            if (!obs) return alert("Escribe una observación.");
-            alert(`Reporte registrado: "${obs}"`);
+            if (!obs.trim()) return alert("Escribe una observación de campo.");
+            alert(`Reporte registrado:\n"${obs}"`);
             document.getElementById('input-observacion').value = '';
         }
 
