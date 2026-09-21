@@ -45,8 +45,8 @@
         }
 
         body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
+            background-color: var(--bg-body) !important;
+            color: var(--text-main) !important;
             font-family: 'Inter', sans-serif;
             transition: background-color 0.25s ease, color 0.25s ease;
         }
@@ -87,7 +87,6 @@
 
         [contenteditable="true"] {
             user-select: text !important;
-            -webkit-user-select: text !important;
             cursor: text;
         }
 
@@ -100,7 +99,6 @@
         .badge-danger-extremo { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
         .badge-danger-alto { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
 
-        /* Drag & Drop controlado por Handle */
         .drag-handle {
             cursor: grab;
         }
@@ -188,10 +186,10 @@
             </div>
         </header>
 
-        <!-- DASHBOARD GRID REORDENABLE -->
+        <!-- DASHBOARD GRID -->
         <div id="dashboard-grid-container" class="grid grid-cols-1 xl:grid-cols-12 gap-6 pb-8">
             
-            <!-- COLUMNA A: CULTIVO Y ÚLTIMA CAPTURA -->
+            <!-- COLUMNA A -->
             <div id="col-a" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 
                 <!-- CULTIVO MONITOREADO -->
@@ -229,7 +227,6 @@
                         </h3>
                     </div>
 
-                    <!-- FOTO MACRO REAL -->
                     <div class="w-full h-64 bg-white rounded-2xl overflow-hidden relative shadow-inner border flex items-center justify-center p-2 group" style="border-color: var(--border-color);">
                         <img id="img-predominante" src="1.2_drosophila_suzukii.jpg" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700" alt="Insecto">
                         
@@ -244,7 +241,6 @@
                         </div>
                     </div>
 
-                    <!-- INFORMACIÓN FITOSANITARIA -->
                     <div class="mt-4 space-y-2">
                         <div class="flex justify-between items-start">
                             <div>
@@ -262,9 +258,9 @@
 
             </div>
 
-            <!-- COLUMNA B: CALENDARIO Y POBLACIÓN -->
+            <!-- COLUMNA B -->
             <div id="col-b" class="draggable-column xl:col-span-4 flex flex-col gap-6">
-                <!-- CALENDARIO DINÁMICO -->
+                <!-- CALENDARIO -->
                 <div class="theme-card rounded-[2rem] p-6 border">
                     <div class="flex justify-between items-center mb-4 select-none">
                         <div class="flex items-center gap-2">
@@ -302,7 +298,7 @@
                 </div>
             </div>
 
-            <!-- COLUMNA C: SENSORES, BARRAS Y MIP -->
+            <!-- COLUMNA C -->
             <div id="col-c" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 <!-- Métricas IoT -->
                 <div class="grid grid-cols-2 gap-4 select-none">
@@ -389,9 +385,9 @@
         </div>
     </main>
 
-    <!-- MODAL DE ASISTENCIA Y SOPORTE -->
-    <div id="modal-asistencia-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
-        <div id="modal-asistencia" class="center-modal pointer-events-auto hidden opacity-0 scale-95 theme-card rounded-[2.5rem] p-8 w-[650px] max-w-[95vw] contour-modal-shadow border">
+    <!-- MODAL ASISTENCIA -->
+    <div id="modal-asistencia" class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
+        <div class="center-modal theme-card rounded-[2.5rem] p-8 w-[650px] max-w-[95vw] contour-modal-shadow border relative" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b pb-4 mb-6" style="border-color: var(--border-color);">
                 <div>
                     <h3 class="text-2xl font-black">Centro de Asistencia y Soporte</h3>
@@ -442,8 +438,8 @@
     </div>
 
     <!-- MODAL HISTORIAL -->
-    <div id="modal-historial-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
-        <div id="modal-historial" class="center-modal pointer-events-auto hidden opacity-0 scale-95 theme-card rounded-[2.5rem] p-8 w-[1000px] max-w-[95vw] contour-modal-shadow border">
+    <div id="modal-historial" class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
+        <div class="center-modal theme-card rounded-[2.5rem] p-8 w-[1000px] max-w-[95vw] contour-modal-shadow border relative" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b pb-4 mb-6" style="border-color: var(--border-color);">
                 <div>
                     <h3 class="text-2xl font-black">Historial de Poblaciones</h3>
@@ -479,14 +475,14 @@
     </div>
 
     <!-- MODAL AJUSTES -->
-    <div id="modal-config-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
-        <div id="modal-config" class="center-modal pointer-events-auto hidden opacity-0 scale-95 theme-card rounded-[2.5rem] p-8 w-[750px] max-w-[95vw] contour-modal-shadow border">
+    <div id="modal-config" class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
+        <div class="center-modal theme-card rounded-[2.5rem] p-8 w-[750px] max-w-[95vw] contour-modal-shadow border relative" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b pb-4 mb-6" style="border-color: var(--border-color);">
                 <div>
                     <h3 class="text-2xl font-black">Ajustes de Plataforma</h3>
                     <p class="text-xs font-bold theme-muted uppercase tracking-widest mt-0.5">PREFERENCIAS Y PRESETS</p>
                 </div>
-                <button onclick="closeAllCenterModals()" class="w-10 h-10 rounded-full theme-subcard font-bold flex items-center justify-center text-xl">&times;</button>
+                <button type="button" onclick="closeAllCenterModals()" class="w-10 h-10 rounded-full theme-subcard font-bold flex items-center justify-center text-xl">&times;</button>
             </div>
 
             <div class="space-y-6">
@@ -537,8 +533,8 @@
     </div>
 
     <!-- MODAL USUARIOS -->
-    <div id="modal-usuarios-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
-        <div id="modal-usuarios" class="center-modal pointer-events-auto hidden opacity-0 scale-95 theme-card rounded-[2.5rem] p-8 w-[750px] max-w-[95vw] contour-modal-shadow border">
+    <div id="modal-usuarios" class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
+        <div class="center-modal theme-card rounded-[2.5rem] p-8 w-[750px] max-w-[95vw] contour-modal-shadow border relative" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b pb-4 mb-6" style="border-color: var(--border-color);">
                 <div>
                     <h3 class="text-2xl font-black">Accesos y Dispositivos</h3>
@@ -560,8 +556,8 @@
     </div>
 
     <!-- MODAL CALENDARIO 4X -->
-    <div id="modal-calendario-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
-        <div id="modal-calendario-content" class="center-modal pointer-events-auto bg-white rounded-[2.5rem] p-8 w-[950px] max-w-[95vw] contour-modal-shadow opacity-0 scale-95 transition-all text-slate-800">
+    <div id="modal-calendario" class="fixed inset-0 bg-black/40 z-50 hidden items-center justify-center p-4">
+        <div id="modal-calendario-content" class="center-modal bg-white rounded-[2.5rem] p-8 w-[950px] max-w-[95vw] contour-modal-shadow text-slate-800 relative" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
                 <div>
                     <h3 class="text-2xl font-black text-gray-900" id="cal-modal-fecha">18 de Septiembre, 2026</h3>
@@ -727,7 +723,6 @@
             document.getElementById('hist-30d-val').innerText = Math.floor(1850 * factor);
         }
 
-        let isCalModalOpen = false;
         function abrirCalendarioModal(dia, mes, anio) {
             closeAllCenterModals();
             document.getElementById('cal-modal-fecha').innerText = `${dia} de ${mes}, ${anio}`;
@@ -742,64 +737,46 @@
                 list.innerHTML += `<div class="bg-gray-50 p-4 rounded-2xl flex justify-between font-bold text-sm border border-gray-100"><span>${p}</span><span class="text-base font-black text-gray-900">${Math.floor(dia * (i + 1.2))} u</span></div>`;
             });
 
-            const content = document.getElementById('modal-calendario-content');
-            content.classList.remove('opacity-0', 'scale-95');
-            content.classList.add('opacity-100', 'scale-100');
-            isCalModalOpen = true;
+            const modal = document.getElementById('modal-calendario');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
         function cerrarCalendarioModal() {
-            const content = document.getElementById('modal-calendario-content');
-            if (content) {
-                content.classList.remove('opacity-100', 'scale-100');
-                content.classList.add('opacity-0', 'scale-95');
+            const modal = document.getElementById('modal-calendario');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
             }
-            isCalModalOpen = false;
         }
 
-        let activeCenterModal = null;
         function openCenterModal(modalId) {
             cerrarCalendarioModal();
-            if (activeCenterModal && activeCenterModal !== modalId) closeAllCenterModals();
+            closeAllCenterModals();
 
             const modal = document.getElementById(modalId);
             if (!modal) return;
             modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0', 'scale-95');
-                modal.classList.add('opacity-100', 'scale-100');
-                activeCenterModal = modalId;
-            }, 10);
+            modal.classList.add('flex');
         }
 
         function closeAllCenterModals() {
-            if (activeCenterModal) {
-                const modal = document.getElementById(activeCenterModal);
-                if (modal) {
-                    modal.classList.remove('opacity-100', 'scale-100');
-                    modal.classList.add('opacity-0', 'scale-95');
-                    setTimeout(() => {
-                        modal.classList.add('hidden');
-                    }, 200);
+            ['modal-asistencia', 'modal-historial', 'modal-config', 'modal-usuarios', 'modal-calendario'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.add('hidden');
+                    el.classList.remove('flex');
                 }
-                activeCenterModal = null;
-            }
+            });
         }
 
-        // Clic exterior para cerrar modales
-        document.addEventListener('click', (e) => {
-            if (isCalModalOpen) {
-                const calContent = document.getElementById('modal-calendario-content');
-                if (calContent && !calContent.contains(e.target) && !e.target.closest('#calendar-grid')) {
-                    cerrarCalendarioModal();
-                }
-            }
-            if (activeCenterModal) {
-                const m = document.getElementById(activeCenterModal);
-                if (m && !m.contains(e.target) && !e.target.closest('aside')) {
+        // Clic en el telón de fondo oscuro para cerrar
+        document.querySelectorAll('.fixed.inset-0').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
                     closeAllCenterModals();
                 }
-            }
+            });
         });
 
         function toggleSubmenuRapido(e) {
@@ -925,7 +902,7 @@
 
             localStorage.setItem('aurumtrap_preset', JSON.stringify({ idioma, ordenColumnas, tema }));
             closeAllCenterModals();
-            alert("Preset guardado con éxito.");
+            alert("Preset de columnas y preferencias guardado con éxito.");
         }
 
         function cargarPresetGuardado() {
