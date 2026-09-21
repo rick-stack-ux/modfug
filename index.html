@@ -93,6 +93,23 @@
 
         .badge-danger-extremo { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
         .badge-danger-alto { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+
+        /* Estilos Drag & Drop */
+        .draggable-column {
+            cursor: grab;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .draggable-column:active {
+            cursor: grabbing;
+        }
+        .draggable-column.dragging {
+            opacity: 0.45;
+            transform: scale(0.98);
+        }
+        .draggable-column.drag-over {
+            border: 2px dashed #a3e635;
+            border-radius: 2rem;
+        }
     </style>
 </head>
 <body class="flex w-screen h-screen p-4 gap-6 select-none overflow-hidden">
@@ -164,11 +181,11 @@
             </div>
         </header>
 
-        <!-- DASHBOARD GRID -->
+        <!-- DASHBOARD GRID (COLUMNAS ARRASTRABLES / DRAGGABLE) -->
         <div id="dashboard-grid-container" class="grid grid-cols-1 xl:grid-cols-12 gap-6 pb-8">
             
             <!-- COLUMNA A: CULTIVO Y ÚLTIMA CAPTURA -->
-            <div id="col-a" class="xl:col-span-4 flex flex-col gap-6">
+            <div id="col-a" draggable="true" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 
                 <!-- CULTIVO MONITOREADO -->
                 <div class="theme-card rounded-[2rem] p-5 border flex flex-col justify-between">
@@ -236,7 +253,7 @@
             </div>
 
             <!-- COLUMNA B: CALENDARIO Y POBLACIÓN -->
-            <div id="col-b" class="xl:col-span-4 flex flex-col gap-6">
+            <div id="col-b" draggable="true" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 <!-- CALENDARIO DINÁMICO -->
                 <div class="theme-card rounded-[2rem] p-6 border">
                     <div class="flex justify-between items-center mb-4">
@@ -273,7 +290,7 @@
             </div>
 
             <!-- COLUMNA C: SENSORES, BARRAS Y MIP -->
-            <div id="col-c" class="xl:col-span-4 flex flex-col gap-6">
+            <div id="col-c" draggable="true" class="draggable-column xl:col-span-4 flex flex-col gap-6">
                 <!-- Métricas IoT -->
                 <div class="grid grid-cols-2 gap-4">
                     <div class="theme-card rounded-[2rem] p-5 border flex flex-col justify-between">
@@ -355,7 +372,6 @@
 
         </div>
     </main>
-
 
     <!-- MODAL DE ASISTENCIA Y SOPORTE -->
     <div id="modal-asistencia-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
@@ -446,7 +462,7 @@
         </div>
     </div>
 
-    <!-- MODAL AJUSTES -->
+    <!-- MODAL AJUSTES (DEPURADO SIN UMBRAL MÍNIMO TINYML) -->
     <div id="modal-config-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
         <div id="modal-config" class="center-modal pointer-events-auto hidden opacity-0 scale-95 theme-card rounded-[2.5rem] p-8 w-[750px] max-w-[95vw] contour-modal-shadow border">
             <div class="flex justify-between items-center border-b pb-4 mb-6" style="border-color: var(--border-color);">
@@ -458,18 +474,13 @@
             </div>
 
             <div class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider theme-muted mb-2">IDIOMA</label>
-                        <select id="config-idioma" class="w-full theme-subcard border rounded-2xl px-4 py-3 outline-none font-bold text-sm" style="border-color: var(--border-color);">
-                            <option value="es">Español (Chile)</option>
-                            <option value="en">English (US)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold uppercase tracking-wider theme-muted mb-2">UMBRAL MÍNIMO TINYML</label>
-                        <input type="number" id="config-umbral" value="85" class="w-full theme-subcard border rounded-2xl px-4 py-3 font-bold text-sm outline-none" style="border-color: var(--border-color);">
-                    </div>
+                <!-- IDIOMA (AHORA OCUPA TODO EL ANCHO TRAS QUITAR UMBRAL) -->
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider theme-muted mb-2">IDIOMA</label>
+                    <select id="config-idioma" class="w-full theme-subcard border rounded-2xl px-4 py-3 outline-none font-bold text-sm" style="border-color: var(--border-color);">
+                        <option value="es">Español (Chile)</option>
+                        <option value="en">English (US)</option>
+                    </select>
                 </div>
 
                 <!-- SELECTOR DE TEMAS FUNCIONAL -->
@@ -488,9 +499,13 @@
                     </div>
                 </div>
 
+                <!-- INSTRUCCIÓN Y SELECTOR DE PRESET DE COLUMNAS -->
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider theme-muted mb-2">PRESET DE COLUMNAS</label>
-                    <select id="config-layout" class="w-full theme-subcard border rounded-2xl px-4 py-3 font-bold text-sm outline-none" style="border-color: var(--border-color);">
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider theme-muted">PRESET DE COLUMNAS</label>
+                        <span class="text-[11px] font-bold text-green-600 bg-green-100 px-2 py-0.5 rounded-full">💡 También puedes arrastrar las columnas directamente en pantalla</span>
+                    </div>
+                    <select id="config-layout" onchange="aplicarLayout(this.value)" class="w-full theme-subcard border rounded-2xl px-4 py-3 font-bold text-sm outline-none" style="border-color: var(--border-color);">
                         <option value="abc">Diseño Estándar: Cultivo | Calendario | Manejo</option>
                         <option value="bac">Enfoque Métrico: Calendario | Cultivo | Manejo</option>
                         <option value="cba">Enfoque Operativo: Manejo | Calendario | Cultivo</option>
@@ -528,7 +543,7 @@
         </div>
     </div>
 
-    <!-- MODAL CALENDARIO 4X (DEPURADO SIN ETIQUETA, SIN TÍTULO DE LISTA Y SIN BOTÓN CERRAR) -->
+    <!-- MODAL CALENDARIO 4X -->
     <div id="modal-calendario-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
         <div id="modal-calendario-content" class="center-modal pointer-events-auto bg-white rounded-[2.5rem] p-8 w-[950px] max-w-[95vw] contour-modal-shadow opacity-0 scale-95 transition-all text-slate-800">
             <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
@@ -539,11 +554,9 @@
                 <button onclick="cerrarCalendarioModal()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold flex items-center justify-center text-xl transition-colors">&times;</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <!-- FOTO LIMPIA (SIN ETIQUETA INFERIOR) -->
                 <div class="w-full h-80 bg-white rounded-3xl overflow-hidden relative shadow-inner border border-gray-100 flex items-center justify-center p-4">
                     <img id="cal-modal-img" src="1.2_drosophila_suzukii.jpg" class="w-full h-full object-contain" alt="Insecto">
                 </div>
-                <!-- LISTA LIMPIA (SIN TÍTULO REPETITIVO NI BOTÓN CERRAR) -->
                 <div class="flex flex-col justify-center h-full">
                     <div class="space-y-3 w-full" id="cal-modal-plagas-lista"></div>
                 </div>
@@ -551,8 +564,7 @@
         </div>
     </div>
 
-
-    <!-- JAVASCRIPT: ROTACIÓN, TEMAS Y MOTOR DE DATOS -->
+    <!-- JAVASCRIPT: ROTACIÓN, TEMAS, DRAG & DROP Y PERSISTENCIA -->
     <script>
         let chartDonutInstance = null;
         let chartBarInstance = null;
@@ -772,19 +784,75 @@
         }
 
         function consultarIAEspecie() {
-            // Actualización reactiva automática sin botones inservibles
+            // Actualización reactiva automática
         }
 
-        function guardarPresetUsuario() {
-            const idioma = document.getElementById('config-idioma').value;
-            const umbral = document.getElementById('config-umbral').value;
-            const layout = document.getElementById('config-layout').value;
-            const tema = document.documentElement.getAttribute('data-theme') || 'original';
+        // ================= SISTEMA DRAG & DROP DE COLUMNAS =================
+        let draggedCol = null;
 
-            localStorage.setItem('aurumtrap_preset', JSON.stringify({ idioma, umbral, layout, tema }));
-            aplicarLayout(layout);
-            closeAllCenterModals();
-            alert("Preset guardado con éxito.");
+        function inicializarDragAndDrop() {
+            const columns = document.querySelectorAll('.draggable-column');
+            const container = document.getElementById('dashboard-grid-container');
+
+            columns.forEach(col => {
+                col.addEventListener('dragstart', (e) => {
+                    draggedCol = col;
+                    col.classList.add('dragging');
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+
+                col.addEventListener('dragend', () => {
+                    col.classList.remove('dragging');
+                    columns.forEach(c => c.classList.remove('drag-over'));
+                    draggedCol = null;
+                    sincronizarPresetSelect();
+                });
+
+                col.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    if (draggedCol && draggedCol !== col) {
+                        col.classList.add('drag-over');
+                    }
+                });
+
+                col.addEventListener('dragleave', () => {
+                    col.classList.remove('drag-over');
+                });
+
+                col.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    col.classList.remove('drag-over');
+                    if (draggedCol && draggedCol !== col) {
+                        const allCols = Array.from(container.children);
+                        const draggedIndex = allCols.indexOf(draggedCol);
+                        const targetIndex = allCols.indexOf(col);
+
+                        if (draggedIndex < targetIndex) {
+                            container.insertBefore(draggedCol, col.nextSibling);
+                        } else {
+                            container.insertBefore(draggedCol, col);
+                        }
+                        sincronizarPresetSelect();
+                    }
+                });
+            });
+        }
+
+        function obtenerOrdenColumnasActual() {
+            const container = document.getElementById('dashboard-grid-container');
+            const ids = Array.from(container.children).map(c => c.id);
+            return ids; // ej: ['col-a', 'col-b', 'col-c']
+        }
+
+        function sincronizarPresetSelect() {
+            const orden = obtenerOrdenColumnasActual().map(id => id.replace('col-', '')).join('');
+            const select = document.getElementById('config-layout');
+            if (select) {
+                if (orden === 'abc' || orden === 'bac' || orden === 'cba') {
+                    select.value = orden;
+                }
+            }
         }
 
         function aplicarLayout(layout) {
@@ -793,13 +861,30 @@
             const colB = document.getElementById('col-b');
             const colC = document.getElementById('col-c');
 
+            if (!container || !colA || !colB || !colC) return;
+
             if (layout === 'bac') {
                 container.appendChild(colB); container.appendChild(colA); container.appendChild(colC);
             } else if (layout === 'cba') {
                 container.appendChild(colC); container.appendChild(colB); container.appendChild(colA);
-            } else {
+            } else if (layout === 'abc') {
                 container.appendChild(colA); container.appendChild(colB); container.appendChild(colC);
+            } else if (Array.isArray(layout)) {
+                layout.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) container.appendChild(el);
+                });
             }
+        }
+
+        function guardarPresetUsuario() {
+            const idioma = document.getElementById('config-idioma').value;
+            const ordenColumnas = obtenerOrdenColumnasActual();
+            const tema = document.documentElement.getAttribute('data-theme') || 'original';
+
+            localStorage.setItem('aurumtrap_preset', JSON.stringify({ idioma, ordenColumnas, tema }));
+            closeAllCenterModals();
+            alert("Preset de columnas y preferencias guardado con éxito.");
         }
 
         function cargarPresetGuardado() {
@@ -808,10 +893,9 @@
                 const p = JSON.parse(raw);
                 if (p.tema) aplicarTema(p.tema);
                 if (p.idioma) document.getElementById('config-idioma').value = p.idioma;
-                if (p.umbral) document.getElementById('config-umbral').value = p.umbral;
-                if (p.layout) {
-                    document.getElementById('config-layout').value = p.layout;
-                    aplicarLayout(p.layout);
+                if (p.ordenColumnas && Array.isArray(p.ordenColumnas)) {
+                    aplicarLayout(p.ordenColumnas);
+                    sincronizarPresetSelect();
                 }
             }
         }
@@ -852,6 +936,7 @@
         // INICIALIZACIÓN
         window.addEventListener('DOMContentLoaded', () => {
             cargarPresetGuardado();
+            inicializarDragAndDrop();
             renderizarCalendario();
 
             // Donut
