@@ -10,7 +10,7 @@
     <style>
         html { font-size: 19.2px; }
 
-        /* SISTEMA DE VARIABLES CSS PARA TEMAS FUNCIONALES */
+        /* SISTEMA DE VARIABLES CSS PARA TEMAS */
         :root[data-theme="original"] {
             --bg-body: #f1f3f4;
             --bg-card: #ffffff;
@@ -167,10 +167,10 @@
         <!-- DASHBOARD GRID -->
         <div id="dashboard-grid-container" class="grid grid-cols-1 xl:grid-cols-12 gap-6 pb-8">
             
-            <!-- COLUMNA A: CULTIVO Y ÚLTIMA CAPTURA (DEPURADA) -->
+            <!-- COLUMNA A: CULTIVO Y ÚLTIMA CAPTURA -->
             <div id="col-a" class="xl:col-span-4 flex flex-col gap-6">
                 
-                <!-- CULTIVO MONITOREADO (SIN BOTÓN IA CONSULT NI ESTADO INSERVIBLE) -->
+                <!-- CULTIVO MONITOREADO -->
                 <div class="theme-card rounded-[2rem] p-5 border flex flex-col justify-between">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-3">
@@ -193,7 +193,7 @@
                     </div>
                 </div>
 
-                <!-- ÚLTIMA CAPTURA PREDOMINANTE (SIN ESPACIOS EN BLANCO NI DATOS INSERVIBLES) -->
+                <!-- ÚLTIMA CAPTURA PREDOMINANTE -->
                 <div class="theme-card rounded-[2rem] p-6 border flex-1 flex flex-col justify-start">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="font-extrabold text-base flex items-center gap-2">
@@ -217,7 +217,7 @@
                         </div>
                     </div>
 
-                    <!-- INFORMACIÓN FITOSANITARIA LIMPIA -->
+                    <!-- INFORMACIÓN FITOSANITARIA -->
                     <div class="mt-4 space-y-2">
                         <div class="flex justify-between items-start">
                             <div>
@@ -446,7 +446,7 @@
         </div>
     </div>
 
-    <!-- MODAL AJUSTES (SISTEMA DE TEMAS 100% OPERATIVO) -->
+    <!-- MODAL AJUSTES -->
     <div id="modal-config-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
         <div id="modal-config" class="center-modal pointer-events-auto hidden opacity-0 scale-95 theme-card rounded-[2.5rem] p-8 w-[750px] max-w-[95vw] contour-modal-shadow border">
             <div class="flex justify-between items-center border-b pb-4 mb-6" style="border-color: var(--border-color);">
@@ -528,7 +528,7 @@
         </div>
     </div>
 
-    <!-- MODAL CALENDARIO 4X -->
+    <!-- MODAL CALENDARIO 4X (DEPURADO SIN ETIQUETA, SIN TÍTULO DE LISTA Y SIN BOTÓN CERRAR) -->
     <div id="modal-calendario-container" class="fixed inset-0 pointer-events-none z-50 flex items-center justify-center p-4">
         <div id="modal-calendario-content" class="center-modal pointer-events-auto bg-white rounded-[2.5rem] p-8 w-[950px] max-w-[95vw] contour-modal-shadow opacity-0 scale-95 transition-all text-slate-800">
             <div class="flex justify-between items-center border-b border-gray-100 pb-4 mb-6">
@@ -539,19 +539,13 @@
                 <button onclick="cerrarCalendarioModal()" class="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold flex items-center justify-center text-xl transition-colors">&times;</button>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <!-- FOTO LIMPIA (SIN ETIQUETA INFERIOR) -->
                 <div class="w-full h-80 bg-white rounded-3xl overflow-hidden relative shadow-inner border border-gray-100 flex items-center justify-center p-4">
                     <img id="cal-modal-img" src="1.2_drosophila_suzukii.jpg" class="w-full h-full object-contain" alt="Insecto">
-                    <div class="absolute bottom-3 left-3 bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl text-xs font-extrabold text-gray-900 shadow">
-                        OV2640 Macro • ESP32 Inferencia
-                    </div>
                 </div>
-                <div class="flex flex-col justify-between h-full space-y-4">
-                    <div class="space-y-3" id="cal-modal-plagas-lista"></div>
-                    <div class="pt-2">
-                        <button onclick="cerrarCalendarioModal()" class="w-full bg-gray-900 text-white hover:bg-gray-800 font-bold py-3.5 rounded-2xl transition-colors shadow">
-                            Cerrar Ventana (O clic fuera)
-                        </button>
-                    </div>
+                <!-- LISTA LIMPIA (SIN TÍTULO REPETITIVO NI BOTÓN CERRAR) -->
+                <div class="flex flex-col justify-center h-full">
+                    <div class="space-y-3 w-full" id="cal-modal-plagas-lista"></div>
                 </div>
             </div>
         </div>
@@ -712,9 +706,9 @@
                 : "153422833219797012.webp";
 
             const list = document.getElementById('cal-modal-plagas-lista');
-            list.innerHTML = `<h4 class="font-extrabold text-sm text-gray-800 border-b pb-2">Capturas Validadas por IA:</h4>`;
+            list.innerHTML = '';
             ['Drosophila suzukii', 'Polilla / Lepidóptero', 'Curculiónido'].forEach((p, i) => {
-                list.innerHTML += `<div class="bg-gray-50 p-3 rounded-2xl flex justify-between font-bold text-xs"><span>${p}</span><span class="text-sm font-black">${Math.floor(dia * (i + 1.2))} u</span></div>`;
+                list.innerHTML += `<div class="bg-gray-50 p-4 rounded-2xl flex justify-between font-bold text-sm border border-gray-100"><span>${p}</span><span class="text-base font-black text-gray-900">${Math.floor(dia * (i + 1.2))} u</span></div>`;
             });
 
             const content = document.getElementById('modal-calendario-content');
