@@ -96,9 +96,6 @@
             border-radius: 6px;
         }
 
-        .badge-danger-extremo { background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
-        .badge-danger-alto { background-color: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
-
         .drag-handle {
             cursor: grab;
         }
@@ -147,7 +144,7 @@
                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
             </button>
             <button title="Recargar" onclick="location.reload()" class="text-gray-500 hover:text-red-400 transition-colors">
-                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013 3v1"></path></svg>
             </button>
         </div>
     </aside>
@@ -176,9 +173,6 @@
             </div>
 
             <div class="flex items-center gap-4">
-                <button onclick="simularInferencia()" class="bg-gray-900 text-white hover:bg-gray-800 font-bold px-6 py-3 rounded-2xl shadow-sm flex items-center gap-2 text-sm active:scale-95 transition-transform">
-                    <span>⚡</span> Inferencia Inmediata
-                </button>
                 <div class="theme-card px-5 py-3 rounded-2xl border flex items-center gap-3">
                     <span class="font-bold text-sm" id="nodo-badge">Trampa IA #01</span>
                     <span class="w-2.5 h-2.5 rounded-full bg-[#a3e635]"></span>
@@ -235,10 +229,6 @@
                                 <span class="bg-red-500 text-white text-[11px] font-black px-1.5 py-0.5 rounded shadow" id="box-predominante-tag">D. suzukii 96.4%</span>
                             </div>
                         </div>
-
-                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur text-white text-[10px] font-mono px-2 py-0.5 rounded-full">
-                            Auto-Refresh: 10m
-                        </div>
                     </div>
 
                     <div class="mt-4 space-y-2">
@@ -247,7 +237,6 @@
                                 <h4 class="font-black text-xl leading-none" id="nombre-comun-predominante">Mosca de Alas Manchadas</h4>
                                 <p class="text-xs theme-muted italic font-medium mt-1" id="nombre-cientifico-predominante">Drosophila suzukii</p>
                             </div>
-                            <span class="badge-danger-extremo px-3 py-1 rounded-full text-xs font-black" id="badge-peligro">Peligro Extremo</span>
                         </div>
                         
                         <p class="text-xs theme-muted leading-relaxed pt-2" id="desc-impacto-predominante">
@@ -659,8 +648,6 @@
                 foto: "1.2_drosophila_suzukii.jpg",
                 comun: "Mosca de Alas Manchadas",
                 cientifico: "Drosophila suzukii",
-                peligro: "Peligro Extremo",
-                clase: "badge-danger-extremo",
                 tag: "D. suzukii 96.4%",
                 desc: "Ovipone en fruto sano en maduración. Hembras sierran la epidermis de la cereza."
             },
@@ -668,8 +655,6 @@
                 foto: "153422833219797012.webp",
                 comun: "Polilla de la Fruta / Enrolladora",
                 cientifico: "Proeulia auraria / Grapholita",
-                peligro: "Peligro Alto",
-                clase: "badge-danger-alto",
                 tag: "Proeulia 94.8%",
                 desc: "Larva barrenadora y masticadora de brotes tiernos y epidermis del fruto en precosecha."
             }
@@ -689,10 +674,6 @@
                 document.getElementById('nombre-comun-predominante').innerText = data.comun;
                 document.getElementById('nombre-cientifico-predominante').innerText = data.cientifico;
                 document.getElementById('desc-impacto-predominante').innerText = data.desc;
-                
-                const badge = document.getElementById('badge-peligro');
-                badge.className = `${data.clase} px-3 py-1 rounded-full text-xs font-black`;
-                badge.innerText = data.peligro;
 
                 imgEl.style.opacity = '1';
             }, 300);
@@ -1009,10 +990,6 @@
                 txt.innerText = "Dispositivo en Línea";
                 btn.className = "flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-100 text-green-800 font-bold transition-colors";
             }
-        }
-
-        function simularInferencia() {
-            alert("Inferencia TinyML ejecutada. Conteo actualizado.");
         }
 
         function procesarFotoCampo(e) {
